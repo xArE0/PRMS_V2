@@ -466,7 +466,7 @@
                         </td>
 
                          <td>
-                          <button>Update</button>
+                          <button class="btn btn-success">Update</button>
                          </td>
                       </tr>
                     <?php } ?>
@@ -520,23 +520,103 @@
         </form>
       </div>
 
+      <!--The dashboard content of manage appointment tab in the sidebar-->
+      <?php include("../Recept_Side/sidebar_manage_app.php")?>
+      
       <div class="tab-pane fade" id="list-app-manage" role="tabpanel" aria-labelledby="home">
-        hello mf finally
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-body">
+              <center><h4>Manage appointments</h4></center><br>
+              <form class="form-group" method="post" action="admin-panel.php">
+                <div class="row">   
+                  <div class="col-md-4">
+                    <label for="appointmentID">Appointment ID</label>
+                  </div>
+                  <div class="col-md-7">
+                    <input type="text" class="form-control" name="patientID" id="patientID">
+                  </div><br><br>
+                  <div class="col-md-4">
+                    <button class="btn btn-info">search</button>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="patientID">Patient ID</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" name="appointmentID" id="appointmentID">
+                  </div><br><br>
+                  <div class="col-md-4">
+                    <label for="spec">Specialization:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select name="spec" class="form-control" id="spec">
+                      <option value="" disabled="" selected="">Select Specialization</option>
+                      <option data-value="General">General</option>
+                      <option data-value="Cardiologist">Cardiologist</option>
+                      <option data-value="Pediatrician">Pediatrician</option>
+                      <option data-value="Neurologist">Neurologist</option>
+                    </select>
+                  </div>
+                  <br><br>
+                  <div class="col-md-4">
+                    <label for="doctor">Doctors:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select name="doctor" class="form-control" id="doctor" required="required">
+                      <option value="" disabled="" selected="">Select Doctor</option>
+                      <option value="ashok" data-value="500" data-spec="General">ashok</option>
+                      <option value="arun" data-value="600" data-spec="Cardiologist">arun</option>
+                      <option value="Dinesh" data-value="700" data-spec="General">Dinesh</option>
+                      <option value="Ganesh" data-value="550" data-spec="Pediatrician">Ganesh</option>
+                      <option value="Kumar" data-value="800" data-spec="Pediatrician">Kumar</option>
+                      <option value="Amit" data-value="1000" data-spec="Cardiologist">Amit</option>
+                      <option value="Abbis" data-value="1500" data-spec="Neurologist">Abbis</option>
+                      <option value="Tiwary" data-value="450" data-spec="Pediatrician">Tiwary</option>
+                    </select>
+                  </div><br><br> 
+                  <div class="col-md-4">
+                    <label for="consultancyfees">Consultancy Fees</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input class="form-control" type="text" name="docFees" id="docFees" readonly="readonly">
+                  </div><br><br>
+                  <div class="col-md-4">
+                    <label>Date</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="date" class="form-control datepicker" name="appdate">
+                  </div><br><br>
+                  <div class="col-md-4">
+                    <label>Time</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="time" class="form-control" name="apptime">
+                  </div><br><br>
+                  <div class="col-md-4">
+                    <input type="submit" name="app-submit" value="Create new entry" class="btn btn-primary" id="inputbtn">
+                  </div>
+                  <div class="col-md-4">
+                    <button type="button" class="btn btn-secondary">Update</button>
+                  </div>
+                  <div class="col-md-4"></div>                  
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
                           
 
        <div class="tab-pane fade" id="list-attend" role="tabpanel" aria-labelledby="list-attend-list">...</div>
-
        <div class="tab-pane fade" id="list-mes" role="tabpanel" aria-labelledby="list-mes-list">
 
-         <div class="col-md-8">
+    <div class="col-md-8">
       <form class="form-group" action="messearch.php" method="post">
         <div class="row">
         <div class="col-md-10"><input type="text" name="mes_contact" placeholder="Enter Contact" class = "form-control"></div>
         <div class="col-md-2"><input type="submit" name="mes_search_submit" class="btn btn-primary" value="Search"></div></div>
       </form>
-    </div>
-        
+    </div>        
               <table class="table table-hover">
                 <thead>
                   <tr>

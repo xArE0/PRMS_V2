@@ -1,46 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <style type="text/css">
-    button:hover{cursor:pointer;}
-    #inputbtn:hover{cursor:pointer;}
-  </style>
-</head>
-<body style="padding-top:50px;">
-   <div class="container-fluid" style="margin-top:50px;">
-    <h3 style="margin-left: 40%; padding-bottom: 20px;font-family: 'IBM Plex Sans', sans-serif;">WELCOME RECEPTIONIST</h3>
-    <div class="row">
-      <div class="col-md-4" style="max-width:25%;margin-top: 3%;">
-        <div class="list-group" id="list-tab" role="tablist">
-          <!-- Existing sidebar items -->
-          <!-- Add a new list item for "Manage Appointments" -->
-          <a class="list-group-item list-group-item-action" href="#list-app-manage" id="list-app-manage-list" role="tab" data-toggle="list" aria-controls="home">Manage Appointments</a>
-        </div>
-        <br>
-      </div>
-      <div class="col-md-8" style="margin-top: 3%;">
-        <div class="tab-content" id="nav-tabContent" style="width: 950px;">
-          <!-- Existing tab-panes -->
-          <!-- Add a new tab-pane for "Manage Appointments" -->
-          <div class="tab-pane fade" id="list-app-manage" role="tabpanel" aria-labelledby="list-app-manage-list">
-            <!-- Content for "Manage Appointments" tab-pane -->
-            <!-- Add your content here -->
-            <h4>Manage Appointments Content</h4>
-            <!-- Your content goes here -->
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-body">
+      <center><h4>Create an appointment</h4></center><br>
+      <form class="form-group" method="post" action="admin-panel.php">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="spec">Specialization:</label>
           </div>
+          <div class="col-md-8">
+            <select name="spec" class="form-control" id="spec">
+              <option value="" disabled="" selected="">Select Specialization</option>
+              <option data-value="General">General</option>
+              <option data-value="Cardiologist">Cardiologist</option>
+              <option data-value="Pediatrician">Pediatrician</option>
+              <option data-value="Neurologist">Neurologist</option>
+            </select>
+          </div>
+          <br><br>
+          <script>
+            document.getElementById('spec').onchange = function foo() {
+              let spec = this.value;   
+              console.log(spec)
+              let docs = [...document.getElementById('doctor').options];
+              
+              docs.forEach((el, ind, arr)=>{
+                arr[ind].setAttribute("style","");
+                if (el.getAttribute("data-spec") != spec ) {
+                  arr[ind].setAttribute("style","display: none");
+                }
+              });
+            };
+          </script>
+
+          <div class="col-md-4">
+            <label for="doctor">Doctors:</label>
+          </div>
+          <div class="col-md-8">
+            <select name="doctor" class="form-control" id="doctor" required="required">
+              <option value="" disabled="" selected="">Select Doctor</option>
+              <option value="ashok" data-value="500" data-spec="General">ashok</option>
+              <option value="arun" data-value="600" data-spec="Cardiologist">arun</option>
+              <option value="Dinesh" data-value="700" data-spec="General">Dinesh</option>
+              <option value="Ganesh" data-value="550" data-spec="Pediatrician">Ganesh</option>
+              <option value="Kumar" data-value="800" data-spec="Pediatrician">Kumar</option>
+              <option value="Amit" data-value="1000" data-spec="Cardiologist">Amit</option>
+              <option value="Abbis" data-value="1500" data-spec="Neurologist">Abbis</option>
+              <option value="Tiwary" data-value="450" data-spec="Pediatrician">Tiwary</option>
+            </select>
+          </div><br><br> 
+
+          <script>
+            document.getElementById('doctor').onchange = function updateFees(e) {
+              var selection = document.querySelector(`[value=${this.value}]`).getAttribute('data-value');
+              document.getElementById('docFees').value = selection;
+            };
+          </script>                  
+
+          <div class="col-md-4">
+            <label for="consultancyfees">Consultancy Fees</label>
+          </div>
+          <div class="col-md-8">
+            <!-- <div id="docFees">Select a doctor</div> -->
+            <input class="form-control" type="text" name="docFees" id="docFees" readonly="readonly">
+          </div><br><br>
+
+          <div class="col-md-4">
+            <label>Date</label>
+          </div>
+          <div class="col-md-8">
+            <input type="date" class="form-control datepicker" name="appdate">
+          </div><br><br>
+
+          <div class="col-md-4">
+            <label>Time</label>
+          </div>
+          <div class="col-md-8">
+            <input type="time" class="form-control" name="apptime">
+          </div><br><br>
+
+          <div class="col-md-4">
+            <input type="submit" name="app-submit" value="Create new entry" class="btn btn-primary" id="inputbtn">
+          </div>
+          <div class="col-md-4">
+            <button type="button" class="btn btn-secondary">Update</button>
+          </div>
+          <div class="col-md-4"></div>                  
         </div>
-      </div>
+      </form>
     </div>
   </div>
-
-  <!-- Bootstrap JS and jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+</div>
