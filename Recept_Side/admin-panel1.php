@@ -35,6 +35,33 @@
   }
 ?>
 
+<?php
+$con=mysqli_connect("localhost","root","","prms_db");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
+    $app_id = filter_input(INPUT_POST, "appointmentID", FILTER_SANITIZE_SPECIAL_CHARS);
+    $checkQuery = "SELECT * FROM appointmenttb WHERE ID = '$app_id'";
+    $result = mysqli_query($con, $checkQuery);
+    $row = mysqli_fetch_assoc($result);
+    $hisname = isset($row['fname']) ? $row['fname'] : ''; 
+
+    if (!$result) {
+        echo "Error in query: " . mysqli_error($con);
+    } 
+    elseif (mysqli_num_rows($result) > 0)
+    {
+        echo $hisname; // Output only the name
+    }
+    else
+    {    
+      echo "User Not found";   
+    }           
+
+    mysqli_close($con);
+    exit();
+}
+?>
+
 
 <html lang="en">
   <head>
@@ -528,22 +555,24 @@
           <div class="card">
             <div class="card-body">
               <center><h4>Manage appointments</h4></center><br>
-              <form class="form-group" method="post" action="admin-panel.php">
+              <form class="form-group" method="post" action="admin-panel1.php">
                 <div class="row">   
                   <div class="col-md-4">
-                    <label for="appointmentID">Appointment ID</label>
+                    <label for="appointmentID">Appointmenst ID</label>
                   </div>
                   <div class="col-md-7">
-                    <input type="text" class="form-control" name="patientID" id="patientID">
+                    <input type="text" class="form-control" name="appointmentID" id="appointmentID">
                   </div><br><br>
-                  <div class="col-md-4">
-                    <button class="btn btn-info">search</button>
-                  </div>
+
+                  <div class="col-md-4">                
+                    <input type="button" onclick="populateData()" value="FIND ME THIS MAN" class="btn btn-info">
+                  </div>            
+
                   <div class="col-md-4">
                     <label for="patientID">Patient ID</label>
                   </div>
                   <div class="col-md-8">
-                    <input type="text" class="form-control" name="appointmentID" id="appointmentID">
+                    <input type="text" class="form-control" name="patientID" id="patientID">
                   </div><br><br>
                   <div class="col-md-4">
                     <label for="spec">Specialization:</label>
@@ -562,7 +591,7 @@
                     <label for="doctor">Doctors:</label>
                   </div>
                   <div class="col-md-8">
-                    <select name="doctor" class="form-control" id="doctor" required="required">
+                    <select name="doctor" class="form-control" id="doctor">
                       <option value="" disabled="" selected="">Select Doctor</option>
                       <option value="ashok" data-value="500" data-spec="General">ashok</option>
                       <option value="arun" data-value="600" data-spec="Cardiologist">arun</option>
@@ -665,5 +694,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
+
+    <script>
+        function populateData() {
+            var app_id = document.getElementById("appointmentID").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "admin-panel1.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Check if the response is not empty
+                    if (xhr.responseText.trim() !== "") {
+                        document.getElementById("patientID").value = xhr.responseText;
+                    } else {
+                        // Handle the case when the response is empty or not found
+                        alert("User not found");
+                    }
+                }
+            };
+            xhr.send("find=&appointmentID=" + encodeURIComponent(app_id));
+        }
+      </script>
+
+
+
   </body>
 </html>
