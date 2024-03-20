@@ -40,10 +40,16 @@ $con=mysqli_connect("localhost","root","","prms_db");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
     $app_id = filter_input(INPUT_POST, "appointmentID", FILTER_SANITIZE_SPECIAL_CHARS);
-    $checkQuery = "SELECT * FROM appointmenttb WHERE ID = '$app_id'";
+    $checkQuery = "SELECT a.ID,a.pid,d.spec,d.username,d.docFees,a.appdate,a.apptime from appointmenttb as a JOIN doctb as d ON a.doctor=d.username WHERE a.ID = '$app_id'";
     $result = mysqli_query($con, $checkQuery);
     $row = mysqli_fetch_assoc($result);
-    $hisname = isset($row['fname']) ? $row['fname'] : ''; 
+
+    $pid = $row['pid'];
+    $dspec=$row['spec'];
+    $dfees=$row['docFees'];
+    $dappdate=$row['appdate'];
+    $dapptime=$row['apptime'];
+
 
     if (!$result) {
         echo "Error in query: " . mysqli_error($con);
@@ -558,10 +564,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
               <form class="form-group" method="post" action="admin-panel1.php">
                 <div class="row">   
                   <div class="col-md-4">
-                    <label for="appointmentID">Appointmenst ID</label>
+                    <label for="appointmentID">Appointment ID</label>
                   </div>
                   <div class="col-md-7">
-                    <input type="text" class="form-control" name="appointmentID" id="appointmentID">
+                    <input type="text" class="form-control" name="appointmentID" id="appointmentID" required>
                   </div><br><br>
 
                   <div class="col-md-4">                

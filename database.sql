@@ -2,6 +2,8 @@ CREATE Database prms_db;
 
 USE prms_db;
 
+select a.ID,a.pid,d.spec,d.username,d.docFees,a.appdate,a.apptime from appointmenttb as a JOIN doctb as d ON a.doctor=d.username; 
+
 CREATE TABLE `admintb` (
   `username` varchar(50) NOT NULL,
   `password` varchar(30) NOT NULL
