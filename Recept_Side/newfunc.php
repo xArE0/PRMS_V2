@@ -25,16 +25,16 @@
 
   function display_docs()
   {
-  global $con;
-  $query = "select * from doctb";
-  $result = mysqli_query($con,$query);
-  while( $row = mysqli_fetch_array($result) )
-  {
-    $username = $row['username'];
-    $price = $row['docFees'];
-    $spec = $row['spec'];
-    echo '<option value="' .$username. '" data-value="'.$price.'" data-spec="'.$spec.'">'.$username.'</option>';
-  }
+    global $con;
+    $query = "select * from doctb";
+    $result = mysqli_query($con,$query);
+    while( $row = mysqli_fetch_array($result) )
+    {
+      $username = $row['username'];
+      $price = $row['docFees'];
+      $spec = $row['spec'];
+      echo '<option value="' .$username. '" data-value="'.$price.'" data-spec="'.$spec.'">'.$username.'</option>';
+    }
   }
   
   if(isset($_POST['doc_sub']))

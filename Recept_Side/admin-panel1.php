@@ -36,37 +36,93 @@
 ?>
 
 <?php
-$con=mysqli_connect("localhost","root","","prms_db");
+$con = mysqli_connect("localhost", "root", "", "prms_db");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
     $app_id = filter_input(INPUT_POST, "appointmentID", FILTER_SANITIZE_SPECIAL_CHARS);
-    $checkQuery = "SELECT a.ID,a.pid,d.spec,d.username,d.docFees,a.appdate,a.apptime from appointmenttb as a JOIN doctb as d ON a.doctor=d.username WHERE a.ID = '$app_id'";
+    $checkQuery = "SELECT a.ID, a.pid, d.spec, d.username, d.docFees, a.appdate, a.apptime FROM appointmenttb AS a JOIN doctb AS d ON a.doctor=d.username WHERE a.ID = '$app_id'";
     $result = mysqli_query($con, $checkQuery);
     $row = mysqli_fetch_assoc($result);
 
-    $pid = $row['pid'];
-    $dspec=$row['spec'];
-    $dfees=$row['docFees'];
-    $dappdate=$row['appdate'];
-    $dapptime=$row['apptime'];
-
-
-    if (!$result) {
-        echo "Error in query: " . mysqli_error($con);
-    } 
-    elseif (mysqli_num_rows($result) > 0)
-    {
-        echo $hisname; // Output only the name
+    if ($row) {
+        // Output JSON-encoded data
+        echo json_encode($row);
+    } else {
+        echo "User Not found";
     }
-    else
-    {    
-      echo "User Not found";   
-    }           
 
     mysqli_close($con);
     exit();
 }
 ?>
+
+<?php
+$con = mysqli_connect("localhost", "root", "", "prms_db");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
+    $appointmentID = $_POST["appointmentID"];
+    $patientID = $_POST["patientID"];
+    $spec = $_POST["spec"];
+    $doctor = $_POST["doctor"];
+    $docFees = $_POST["docFees"];
+    $appdate = $_POST["appdate"];
+    $apptime = $_POST["apptime"];
+
+    // Fetch patient data based on patientID
+    $patient_query = mysqli_query($con, "SELECT * FROM patreg WHERE pid = '$patientID'");
+    $patient_data = mysqli_fetch_assoc($patient_query);
+
+    // Checking if patient data is found
+    if ($patient_data) {      
+        $_SESSION['pid'] = $patient_data['pid'];
+        $_SESSION['email'] = $patient_data['email'];
+        $_SESSION['fname'] = $patient_data['fname'];
+        $_SESSION['lname'] = $patient_data['lname'];
+        $_SESSION['gender'] = $patient_data['gender'];
+        $_SESSION['contact'] = $patient_data['contact'];
+
+        // Insert appointment data into the database
+        $sqlcmd = "INSERT INTO appointmenttb(pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus) 
+                   VALUES ('{$_SESSION['pid']}', '{$_SESSION['fname']}', '{$_SESSION['lname']}', '{$_SESSION['gender']}', '{$_SESSION['email']}', '{$_SESSION['contact']}', '$doctor', '$docFees', '$appdate', '$apptime', '1', '1')";
+
+        $query = mysqli_query($con, $sqlcmd);
+
+        if ($query) {
+            // Redirect to a different page to prevent form resubmission
+            header("Location: admin-panel1.php");
+            exit(); // Stop further execution
+        } else {
+            echo "<script>alert('Unable to process your request. Please try again!');</script>";
+        }
+    } else {      
+        echo "<script>alert('Patient data not found. Please check the patient ID!');</script>";
+    }
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_entry"])) {
+    $appointmentID = $_POST["appointmentID"];
+    $patientID = $_POST["patientID"];
+    $spec = $_POST["spec"];
+    $doctor = $_POST["doctor"];
+    $docFees = $_POST["docFees"];
+    $appdate = $_POST["appdate"];
+    $apptime = $_POST["apptime"];
+    
+    $sqlcmd = "UPDATE appointmenttb 
+              SET doctor = '$doctor', docFees = '$docFees', appdate = '$appdate', apptime = '$apptime' 
+              WHERE ID = '$appointmentID' AND pid = '$patientID'";
+
+    $query = mysqli_query($con, $sqlcmd);
+
+    if ($query) {
+        echo "<script>alert('Appointment details successfully updated');</script>";       
+        header("Location: admin-panel1.php");
+        exit();
+    } else {
+        echo "<script>alert('Failed to update appointment details. Please try again!');</script>";
+    }
+}
+?>
+
+
 
 
 <html lang="en">
@@ -567,7 +623,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
                     <label for="appointmentID">Appointment ID</label>
                   </div>
                   <div class="col-md-7">
-                    <input type="text" class="form-control" name="appointmentID" id="appointmentID" required>
+                    <input type="text" class="form-control" name="appointmentID" id="appointmentID">
                   </div><br><br>
 
                   <div class="col-md-4">                
@@ -578,40 +634,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
                     <label for="patientID">Patient ID</label>
                   </div>
                   <div class="col-md-8">
-                    <input type="text" class="form-control" name="patientID" id="patientID">
+                    <input type="text" class="form-control" name="patientID" id="patientID" required>
                   </div><br><br>
+
                   <div class="col-md-4">
                     <label for="spec">Specialization:</label>
                   </div>
+
                   <div class="col-md-8">
-                    <select name="spec" class="form-control" id="spec">
-                      <option value="" disabled="" selected="">Select Specialization</option>
-                      <option data-value="General">General</option>
-                      <option data-value="Cardiologist">Cardiologist</option>
-                      <option data-value="Pediatrician">Pediatrician</option>
-                      <option data-value="Neurologist">Neurologist</option>
-                    </select>
+                    <select name="spec" class="form-control" id="spec" required>
+                      <option value="" disabled selected>Select Specialization</option>
+                          <?php 
+                            display_specs();
+                          ?>                    
+                    </select>                    
                   </div>
                   <br><br>
+
+                  <!-- Script to limit doctor selection according to specialization-->
+                  <script>
+                    document.getElementById('spec').onchange = function foo() {
+                      let spec = this.value;   
+                      console.log(spec)
+                      let docs = [...document.getElementById('doctor').options];
+                      
+                      docs.forEach((el, ind, arr)=>{
+                        arr[ind].setAttribute("style","");
+                        if (el.getAttribute("data-spec") != spec ) {
+                          arr[ind].setAttribute("style","display: none");
+                        }
+                      });
+                    };
+                  </script>
+
                   <div class="col-md-4">
                     <label for="doctor">Doctors:</label>
                   </div>
                   <div class="col-md-8">
-                    <select name="doctor" class="form-control" id="doctor">
-                      <option value="" disabled="" selected="">Select Doctor</option>
-                      <option value="ashok" data-value="500" data-spec="General">ashok</option>
-                      <option value="arun" data-value="600" data-spec="Cardiologist">arun</option>
-                      <option value="Dinesh" data-value="700" data-spec="General">Dinesh</option>
-                      <option value="Ganesh" data-value="550" data-spec="Pediatrician">Ganesh</option>
-                      <option value="Kumar" data-value="800" data-spec="Pediatrician">Kumar</option>
-                      <option value="Amit" data-value="1000" data-spec="Cardiologist">Amit</option>
-                      <option value="Abbis" data-value="1500" data-spec="Neurologist">Abbis</option>
-                      <option value="Tiwary" data-value="450" data-spec="Pediatrician">Tiwary</option>
+                    <select name="doctor" class="form-control" id="doctor" required>
+                    <option value="" disabled selected>Select Doctor</option>
+                      <?php display_docs(); ?>
                     </select>
                   </div><br><br> 
+
+                  <!-- Script to update Consultancy fees according to doctor selected -->
+                  <script>
+                        document.getElementById('doctor').onchange = function updateFees(e) {
+                          var selection = document.querySelector(`[value=${this.value}]`).getAttribute('data-value');
+                          document.getElementById('docFees').value = selection;
+                        };
+                    </script>
+
                   <div class="col-md-4">
                     <label for="consultancyfees">Consultancy Fees</label>
                   </div>
+
                   <div class="col-md-8">
                     <input class="form-control" type="text" name="docFees" id="docFees" readonly="readonly">
                   </div><br><br>
@@ -619,19 +696,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
                     <label>Date</label>
                   </div>
                   <div class="col-md-8">
-                    <input type="date" class="form-control datepicker" name="appdate">
+                    <input type="date" class="form-control datepicker" name="appdate" required>
                   </div><br><br>
                   <div class="col-md-4">
                     <label>Time</label>
                   </div>
                   <div class="col-md-8">
-                    <input type="time" class="form-control" name="apptime">
+                    <input type="time" class="form-control" name="apptime" required>
                   </div><br><br>
                   <div class="col-md-4">
                     <input type="submit" name="app-submit" value="Create new entry" class="btn btn-primary" id="inputbtn">
                   </div>
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-secondary">Update</button>
+                     <input type="submit" name="update_entry" value="Update entry" class="btn btn-secondary" id="updatebtn">
                   </div>
                   <div class="col-md-4"></div>                  
                 </div>
@@ -702,25 +779,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
 
     <script>
-        function populateData() {
-            var app_id = document.getElementById("appointmentID").value;
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "admin-panel1.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Check if the response is not empty
-                    if (xhr.responseText.trim() !== "") {
-                        document.getElementById("patientID").value = xhr.responseText;
-                    } else {
-                        // Handle the case when the response is empty or not found
-                        alert("User not found");
-                    }
-                }
-            };
-            xhr.send("find=&appointmentID=" + encodeURIComponent(app_id));
+function populateData() {
+    var app_id = document.getElementById("appointmentID").value;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "admin-panel1.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        console.log("Ready state:", xhr.readyState); // Log ready state changes
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log("Response:", xhr.responseText); // Log response
+            var response = xhr.responseText.trim();
+            if (response !== "User Not found") {
+                var data = JSON.parse(response);
+                console.log("Data:", data); // Log parsed data
+                // Fill fields with data
+                document.getElementById("patientID").value = data.pid;
+                document.getElementById("spec").value = data.spec;
+                document.getElementById("doctor").value = data.username;
+                document.getElementById("docFees").value = data.docFees;
+                document.getElementById("appdate").value = data.appdate;
+                document.getElementById("apptime").value = data.apptime;
+            } else {
+                alert("User not found");
+            }
         }
-      </script>
+    };
+    xhr.send("find=&appointmentID=" + encodeURIComponent(app_id));
+}
+</script>
+
+
 
 
 
