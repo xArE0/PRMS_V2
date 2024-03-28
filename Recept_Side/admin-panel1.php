@@ -117,6 +117,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
 }
 ?>
 
+
+<!-- Code to Approve Mechanism in Appointment Details Section of Sidebar -->
+<?php
+// Establish database connection
+$con = mysqli_connect("localhost", "root", "", "prms_db");
+if (!$con) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
+  // Sanitizing the input to prevent SQL injection
+  $appointmentID = mysqli_real_escape_string($con, $_POST['appointmentID']);
+
+  // Update the appointment status in the database
+  $update_query = "UPDATE appointmenttb SET approve_status = 1 WHERE ID = '$appointmentID'";
+  mysqli_query($con, $update_query);
+  mysqli_close($con);
+}
+?>
+
+
 <html lang="en">
 
 <head>
@@ -547,7 +567,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
                       if (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1)) {
                         echo "Cancelled by Patient";
                       }
-
                       if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
                         echo "Cancelled by Doctor";
                       }
@@ -555,7 +574,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
                     </td>
 
                     <td>
-                      <button class="btn btn-success">Update</button>
+                      <!-- Approve button -->
+                      <?php if ($row['approve_status'] == 0) { ?>
+                        <button id="approveBtn_<?php echo $row['ID']; ?>" class="btn btn-success" onclick="approveAppointment('<?php echo $row['ID']; ?>')">A</button>
+                      <?php } else { ?>
+                        <!-- Disable the button if appointment is already approved -->
+                        <button class="btn btn-secondary" disabled>D</button>
+                      <?php } ?>
+                      <!-- Update button -->
+                      <button class="btn btn-info">U</button>
                     </td>
                   </tr>
                 <?php } ?>
@@ -564,6 +591,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
             </table>
             <br>
           </div>
+
+          <!-- Script to change the Buttons from Aprrove to Approved -->
+          <script>
+            // Function to handle approve button click
+            function approveAppointment(appointmentID) {
+              // Disable the button to prevent multiple clicks
+              document.getElementById('approveBtn_' + appointmentID).disabled = true;
+
+              // Send an AJAX request to update the database
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", "admin-panel1.php", true);
+              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+              xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                  // Update button appearance and status on success
+                  document.getElementById('approveBtn_' + appointmentID).innerText = 'D';
+                  document.getElementById('approveBtn_' + appointmentID).classList.remove('btn-success');
+                  document.getElementById('approveBtn_' + appointmentID).classList.add('btn-secondary');
+                }
+              };
+              xhr.send("appointmentID=" + appointmentID);
+            }
+          </script>
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
 
