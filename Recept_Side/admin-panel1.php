@@ -19,19 +19,16 @@ if (isset($_POST['docsub'])) {
 
     if ($doctor_record) {
         // Email already exists, display an error message        
-        echo "<script>alert('Email already exists!');</script>";
-        sleep(5);
-        header("Location: admin-panel1.php");
+        echo "<script>alert('Email already exists!');window.location.href = 'admin-panel1.php';</script>";
     } else {
         // Email does not exist, proceed with inserting the new doctor record
         $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
         $result = mysqli_query($con, $query);
         if ($result) {
-            echo "<script>alert('Doctor added successfully!');</script>";
-            header("Location: admin-panel1.php");
+            echo "<script>alert('Doctor added successfully!');window.location.href = 'admin-panel1.php';</script>";
         } else {
             // Failed to insert doctor record
-            echo "<script>alert('Failed to add doctor!');</script>";            
+            echo "<script>alert('Failed to add doctor!');window.location.href = 'admin-panel1.php';</script>";            
         }
     }
 }
@@ -42,11 +39,10 @@ if (isset($_POST['docsub1'])) {
   $query = "UPDATE doctb set working_status=0 Where email='$demail';";
   $result = mysqli_query($con, $query);
   if ($result) {
-    echo "<script>alert('Doctor removed successfully!');</script>";
+    echo "<script>alert('Doctor removed successfully!');window.location.href = 'admin-panel1.php';</script>";
   } else {
-    echo "<script>alert('Unable to delete!');</script>";
+    echo "<script>alert('Unable to delete!');window.location.href = 'admin-panel1.php';</script>";
   }
-  header("Location: admin-panel1.php");
 }
 
 // Delete a patient
@@ -55,11 +51,10 @@ if (isset($_POST['pocsub1'])) {
   $query = "UPDATE patreg set active_status=0 Where email='$pemail';";
   $result = mysqli_query($con, $query);
   if ($result) {
-    echo "<script>alert('Patient removed successfully!');</script>";
+    echo "<script>alert('Patient removed successfully!');window.location.href = 'admin-panel1.php';</script>";
   } else {
-    echo "<script>alert('Unable to delete!');</script>";
+    echo "<script>alert('Unable to delete!');window.location.href = 'admin-panel1.php';</script>";
   }
-  header("Location: admin-panel1.php");
 }
 ?>
 
@@ -110,13 +105,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
         header("Location: admin-panel1.php");
         exit(); // Stop further execution
       } else {
-        echo "<script>alert('Unable to process your request. Please try again!');</script>";
+        echo "<script>alert('Unable to process your request. Please try again!');window.location.href = 'admin-panel1.php';</script>";
       }
     } else {
-      echo "<script>alert('Patient data not found. Please check the patient ID!');</script>";
+      echo "<script>alert('Patient data not found. Please check the patient ID!');window.location.href = 'admin-panel1.php';</script>";
     }
   } else {
-    echo "<script>alert('Appointment date and time cannot be in the past!');</script>";
+    echo "<script>alert('Appointment date and time cannot be in the past!');window.location.href = 'admin-panel1.php';</script>";
   }
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_entry"])) {
   // Get current date and time
@@ -144,11 +139,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
     $query = mysqli_query($con, $sqlcmd);
 
     if ($query) {
-      echo "<script>alert('Appointment details successfully updated');</script>";
-      header("Location: admin-panel1.php");
+      echo "<script>alert('Appointment details successfully updated');window.location.href = 'admin-panel1.php';</script>";
       exit();
     } else {
-      echo "<script>alert('Failed to update appointment details. Please try again!');</script>";
+      echo "<script>alert('Failed to update appointment details. Please try again!');window.location.href = 'admin-panel1.php';</script>";
     }
   } else {
     echo "<script>alert('Appointment date and time cannot be in the past!');</script>";
@@ -286,7 +280,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
           <a class="list-group-item list-group-item-action" href="#list-app-manage" id="list-app-manage-list" role="tab" data-toggle="list" aria-controls="home">Manage Appointments</a>
           <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list" role="tab" data-toggle="list" aria-controls="home">Appointment Details</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
-          <a class="list-group-item list-group-item-action" href="#list-settings" id="list-adoc-list" role="tab" data-toggle="list" aria-controls="home">Add Doctor</a>
+          <a class="list-group-item list-group-item-action" href="#list-settings" id="list-adoc-list" role="tab" data-toggle="list" aria-controls="home">Doctor</a>
           <a class="list-group-item list-group-item-action" href="#list-settings1" id="list-ddoc-list" role="tab" data-toggle="list" aria-controls="home">Delete Doctor/Patient</a>
           <a class="list-group-item list-group-item-action" href="#list-mes" id="list-mes-list" role="tab" data-toggle="list" aria-controls="home">Queries</a>
 
