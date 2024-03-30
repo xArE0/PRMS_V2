@@ -383,8 +383,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
             <div class="col-md-8">
               <form class="form-group" action="patientsearch.php" method="post">
                 <div class="row">
-                  <div class="col-md-10"><input type="text" name="patient_contact" placeholder="Enter Contact" class="form-control"></div>
-                  <div class="col-md-2"><input type="submit" name="patient_search_submit" class="btn btn-primary" value="Search"></div>
+                  <div class="col-md-10"><input type="text" name="patient_contact" placeholder="Enter Contact" class="form-control" required></div>
+                  <div class="col-md-2"><input type="submit" name="patient_search_submit" class="btn btn-info" value="Search"></div>
                 </div>
               </form>
             </div>
