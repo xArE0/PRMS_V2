@@ -79,7 +79,7 @@ INSERT INTO doctb (username, password, email, spec, docFees) VALUES
 ('Tiwary', 'tiwary123', 'tiwary@gmail.com', 'Pediatrician', 450);
 
 CREATE TABLE patreg (
-  pid int(11) NOT NULL AUTO_INCREMENT,
+  pid int(11) PRIMARY KEY AUTO_INCREMENT,
   fname varchar(20) NOT NULL,
   lname varchar(20) NOT NULL,
   gender varchar(10) NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE patreg (
   contact varchar(10) NOT NULL,
   password varchar(30) NOT NULL,
   cpassword varchar(30) NOT NULL,
-  PRIMARY KEY (pid)
+  active_status INT NOT NULL DEFAULT 1
 );
 
 INSERT INTO patreg (fname, lname, gender, email, contact, password, cpassword) VALUES
@@ -121,3 +121,6 @@ INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, al
 ('Ganesh', 2, 8, 'Alia', 'Bhatt', '2020-03-21', '10:00:00', 'Severe Fever', 'Nothing', 'Take bed rest'),
 ('Kumar', 9, 12, 'William', 'Blake', '2020-03-26', '12:00:00', 'Sever fever', 'nothing', 'Paracetamol -> 1 every morning and night'),
 ('Tiwary', 9, 13, 'William', 'Blake', '2020-03-26', '14:00:00', 'Cough', 'Skin dryness', 'Intake fruits with more water content');
+
+
+UPDATE patreg 

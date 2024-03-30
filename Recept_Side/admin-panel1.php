@@ -6,16 +6,34 @@ include('newfunc.php');
 
 // Add new doctor
 if (isset($_POST['docsub'])) {
-  $doctor = $_POST['doctor'];
-  $dpassword = $_POST['dpassword'];
-  $demail = $_POST['demail'];
-  $spec = $_POST['special'];
-  $docFees = $_POST['docFees'];
-  $query = "insert into doctb(username,password,email,spec,docFees)values('$doctor','$dpassword','$demail','$spec','$docFees')";
-  $result = mysqli_query($con, $query);
-  if ($result) {
-    echo "<script>alert('Doctor added successfully!');</script>";
-  }
+    $doctor = $_POST['doctor'];
+    $dpassword = $_POST['dpassword'];
+    $demail = $_POST['demail'];
+    $spec = $_POST['special'];
+    $docFees = $_POST['docFees'];
+
+    // Check if email already exists
+    $email_check_query = "SELECT * FROM doctb WHERE email='$demail' LIMIT 1";
+    $result = mysqli_query($con, $email_check_query);
+    $doctor_record = mysqli_fetch_assoc($result);
+
+    if ($doctor_record) {
+        // Email already exists, display an error message        
+        echo "<script>alert('Email already exists!');</script>";
+        sleep(5);
+        header("Location: admin-panel1.php");
+    } else {
+        // Email does not exist, proceed with inserting the new doctor record
+        $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            echo "<script>alert('Doctor added successfully!');</script>";
+            header("Location: admin-panel1.php");
+        } else {
+            // Failed to insert doctor record
+            echo "<script>alert('Failed to add doctor!');</script>";            
+        }
+    }
 }
 
 // Delete a doctor
@@ -28,6 +46,20 @@ if (isset($_POST['docsub1'])) {
   } else {
     echo "<script>alert('Unable to delete!');</script>";
   }
+  header("Location: admin-panel1.php");
+}
+
+// Delete a patient
+if (isset($_POST['pocsub1'])) {
+  $pemail = $_POST['pemail'];
+  $query = "UPDATE patreg set active_status=0 Where email='$pemail';";
+  $result = mysqli_query($con, $query);
+  if ($result) {
+    echo "<script>alert('Patient removed successfully!');</script>";
+  } else {
+    echo "<script>alert('Unable to delete!');</script>";
+  }
+  header("Location: admin-panel1.php");
 }
 ?>
 
@@ -255,7 +287,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
           <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list" role="tab" data-toggle="list" aria-controls="home">Appointment Details</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
           <a class="list-group-item list-group-item-action" href="#list-settings" id="list-adoc-list" role="tab" data-toggle="list" aria-controls="home">Add Doctor</a>
-          <a class="list-group-item list-group-item-action" href="#list-settings1" id="list-ddoc-list" role="tab" data-toggle="list" aria-controls="home">Delete Doctor</a>
+          <a class="list-group-item list-group-item-action" href="#list-settings1" id="list-ddoc-list" role="tab" data-toggle="list" aria-controls="home">Delete Doctor/Patient</a>
           <a class="list-group-item list-group-item-action" href="#list-mes" id="list-mes-list" role="tab" data-toggle="list" aria-controls="home">Queries</a>
 
         </div><br>
@@ -342,13 +374,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                   <div class="panel panel-white no-radius text-center">
                     <div class="panel-body">
                       <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-plus fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Manage Doctors</h4>
+                      <h4 class="StepTitle" style="margin-top: 5%;">Manage Accounts</h4>
 
                       <p class="cl-effect-1">
                         <a href="#app-hist" onclick="clickDiv('#list-adoc-list')">Add Doctors</a>
                         &nbsp|
                         <a href="#app-hist" onclick="clickDiv('#list-ddoc-list')">
-                          Delete Doctors
+                          Delete
                         </a>
                       </p>
                     </div>
@@ -364,7 +396,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               <form class="form-group" action="doctorsearch.php" method="post">
                 <div class="row">
                   <div class="col-md-10"><input type="text" name="doctor_contact" placeholder="Enter Email ID" class="form-control"></div>
-                  <div class="col-md-2"><input type="submit" name="doctor_search_submit" class="btn btn-primary" value="Search"></div>
+                  <div class="col-md-2"><input type="submit" name="doctor_search_submit" class="btn btn-info" value="Search"></div>
                 </div>
               </form>
             </div>
@@ -524,7 +556,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               <form class="form-group" action="appsearch.php" method="post">
                 <div class="row">
                   <div class="col-md-10"><input type="text" name="app_contact" placeholder="Enter Contact" class="form-control"></div>
-                  <div class="col-md-2"><input type="submit" name="app_search_submit" class="btn btn-primary" value="Search"></div>
+                  <div class="col-md-2"><input type="submit" name="app_search_submit" class="btn btn-info" value="Search"></div>
                 </div>
               </form>
             </div>
@@ -655,11 +687,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
             <form class="form-group" method="post" action="admin-panel1.php">
               <div class="row">
 
-                <div class="col-md-4"><label>Email ID:</label></div>
-                <div class="col-md-8"><input type="email" class="form-control" name="demail" required></div><br><br>
+                <div class="col-md-4"><label>Doctor Email ID:</label></div>
+                <div class="col-md-8"><input type="email" class="form-control" name="demail"></div><br><br>
 
               </div>
-              <input type="submit" name="docsub1" value="Delete Doctor" class="btn btn-primary" onclick="confirm('do you really want to delete?')">
+
+              <div class="row">
+                <div class="col-md-4"><label>Patient Email ID:</label></div>
+                <div class="col-md-8"><input type="email" class="form-control" name="pemail"></div><br><br>
+              </div>
+
+              <input type="submit" name="docsub1" value="Delete Doctor" class="btn btn-danger" onclick="confirm('do you really want to delete?')">
+              <input type="submit" name="pocsub1" value="Delete Patient" class="btn btn-info" onclick="confirm('do you really want to delete?')">
             </form>
           </div>
 
@@ -802,11 +841,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                 $query = "select * from contact;";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
-
-                  #$fname = $row['fname'];
-                  #$lname = $row['lname'];
-                  #$email = $row['email'];
-                  #$contact = $row['contact'];
                 ?>
                   <tr>
                     <td><?php echo $row['name']; ?></td>
