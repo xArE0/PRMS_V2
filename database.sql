@@ -123,4 +123,4 @@ INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, al
 ('Tiwary', 9, 13, 'William', 'Blake', '2020-03-26', '14:00:00', 'Cough', 'Skin dryness', 'Intake fruits with more water content');
 
 
-UPDATE patreg 
+delete from prms_db.prestb where ID=0
