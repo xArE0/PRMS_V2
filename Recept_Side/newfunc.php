@@ -10,7 +10,6 @@ if (isset($_POST['update_data'])) {
     header("Location:updated.php");
 }
 
-
 function display_specs()
 {
   global $con;
@@ -42,3 +41,4 @@ if (isset($_POST['doc_sub'])) {
   if ($result)
     header("Location:adddoc.php");
 }
+?>

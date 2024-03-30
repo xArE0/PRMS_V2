@@ -4,6 +4,7 @@ $con = mysqli_connect("localhost", "root", "", "prms_db");
 
 include('newfunc.php');
 
+// Add new doctor
 if (isset($_POST['docsub'])) {
   $doctor = $_POST['doctor'];
   $dpassword = $_POST['dpassword'];
@@ -17,7 +18,7 @@ if (isset($_POST['docsub'])) {
   }
 }
 
-
+// Delete a doctor
 if (isset($_POST['docsub1'])) {
   $demail = $_POST['demail'];
   $query = "delete from doctb where email='$demail';";
@@ -30,27 +31,7 @@ if (isset($_POST['docsub1'])) {
 }
 ?>
 
-<?php
-$con = mysqli_connect("localhost", "root", "", "prms_db");
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["find"])) {
-  $app_id = filter_input(INPUT_POST, "appointmentID", FILTER_SANITIZE_SPECIAL_CHARS);
-  $checkQuery = "SELECT a.ID, a.pid, d.spec, d.username, d.docFees, a.appdate, a.apptime FROM appointmenttb AS a JOIN doctb AS d ON a.doctor=d.username WHERE a.ID = '$app_id'";
-  $result = mysqli_query($con, $checkQuery);
-  $row = mysqli_fetch_assoc($result);
-
-  if ($row) {
-    // Output JSON-encoded data
-    echo json_encode($row);
-  } else {
-    echo "User Not found";
-  }
-
-  mysqli_close($con);
-  exit();
-}
-?>
-
+<!-- Code for creating and updating new entries in manage appointment section of sidebar -->
 <?php
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
@@ -136,7 +117,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
 }
 ?>
 
-
 <html lang="en">
 
 <head>
@@ -146,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
   <meta charset="utf-8">
   <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="../css/style.css">
 
   <!-- Bootstrap CSS -->
@@ -582,7 +562,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                         <button class="btn btn-secondary" disabled>D</button>
                       <?php } ?>
                       <!-- Update button -->
-                      <button class="btn btn-info">U</button>
+                      <!-- "U" button with onclick event -->
+                      <button class="btn btn-info" onclick="updateAppointment('<?php echo $row['ID']; ?>','<?php echo $row['pid']; ?>','<?php echo $row['fname']; ?>','<?php echo $row['lname']; ?>','<?php echo $row['gender']; ?>','<?php echo $row['contact']; ?>','<?php echo $row['doctor']; ?>','<?php echo $row['docFees']; ?>','<?php echo $row['appdate']; ?>','<?php echo $row['apptime']; ?>')">U</button>
                     </td>
                   </tr>
                 <?php } ?>
@@ -590,7 +571,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               </tbody>
             </table>
             <br>
-          </div>
+          </div>        
 
           <!-- Script to change the Buttons from Aprrove to Approved -->
           <script>
@@ -660,8 +641,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
           </div>
 
           <!--The dashboard content of manage appointment tab in the sidebar-->
-          <?php include("../Recept_Side/sidebar_manage_app.php") ?>
-
           <div class="tab-pane fade" id="list-app-manage" role="tabpanel" aria-labelledby="home">
             <div class="container-fluid">
               <div class="card">
@@ -679,8 +658,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                       </div><br><br>
 
                       <div class="col-md-4">
-                        <input type="button" onclick="populateData()" value="FIND ME THIS MAN" class="btn btn-info">
-                      </div>
+                        <input type="button" id="findButton" value="Find me this man" class="btn btn-info">
+                      </div>>
 
                       <div class="col-md-4">
                         <label for="patientID">Patient ID</label>
@@ -738,7 +717,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                       </script>
 
                       <div class="col-md-4">
-                        <label for="consultancyfees">Consultancy Fees</label>
+                        <label>Consultancy Fees</label>
                       </div>
 
                       <div class="col-md-8">
@@ -748,13 +727,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                         <label>Date</label>
                       </div>
                       <div class="col-md-8">
-                        <input type="date" class="form-control datepicker" name="appdate" required>
+                        <input type="date" class="form-control datepicker" name="appdate" id="appdate" required>
                       </div><br><br>
                       <div class="col-md-4">
                         <label>Time</label>
                       </div>
                       <div class="col-md-8">
-                        <input type="time" class="form-control" name="apptime" required>
+                        <input type="time" class="form-control" name="apptime" id="apptime" required>
                       </div><br><br>
                       <div class="col-md-4">
                         <input type="submit" name="app-submit" value="Create new entry" class="btn btn-primary" id="inputbtn">
@@ -769,7 +748,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               </div>
             </div>
           </div>
-
 
           <div class="tab-pane fade" id="list-attend" role="tabpanel" aria-labelledby="list-attend-list">...</div>
           <div class="tab-pane fade" id="list-mes" role="tabpanel" aria-labelledby="list-mes-list">
@@ -817,9 +795,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
             </table>
             <br>
           </div>
-
-
-
         </div>
       </div>
     </div>
@@ -830,36 +805,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
-
-  <script>
-    function populateData() {
-      var app_id = document.getElementById("appointmentID").value;
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", "admin-panel1.php", true);
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.onreadystatechange = function() {
-        console.log("Ready state:", xhr.readyState); // Log ready state changes
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          console.log("Response:", xhr.responseText); // Log response
-          var response = xhr.responseText.trim();
-          if (response !== "User Not found") {
-            var data = JSON.parse(response);
-            console.log("Data:", data); // Log parsed data
-            // Fill fields with data
-            document.getElementById("patientID").value = data.pid;
-            document.getElementById("spec").value = data.spec;
-            document.getElementById("doctor").value = data.username;
-            document.getElementById("docFees").value = data.docFees;
-            document.getElementById("appdate").value = data.appdate;
-            document.getElementById("apptime").value = data.apptime;
-          } else {
-            alert("User not found");
-          }
-        }
-      };
-      xhr.send("find=&appointmentID=" + encodeURIComponent(app_id));
-    }
-  </script>
 </body>
-
 </html>
