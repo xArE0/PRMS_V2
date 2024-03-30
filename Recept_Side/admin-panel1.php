@@ -220,7 +220,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
 
     <style>
       .bg-primary {
-        background: -webkit-linear-gradient(left, #177F9C, #90EDDB);
+        background: -webkit-linear-gradient(left, #6358ba, #005c76);
       }
 
       .col-md-4 {

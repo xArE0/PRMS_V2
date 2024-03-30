@@ -60,6 +60,7 @@ INSERT INTO contact (name, email, contact, message) VALUES
 ('Jane', 'jane@gmail.com', '7869869757', 'I love your service!');
 
 CREATE TABLE doctb (
+  docid INT PRIMARY KEY AUTO_INCREMENT,
   username varchar(50) NOT NULL,
   password varchar(50) NOT NULL,
   email varchar(50) NOT NULL,
@@ -123,4 +124,4 @@ INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, al
 ('Tiwary', 9, 13, 'William', 'Blake', '2020-03-26', '14:00:00', 'Cough', 'Skin dryness', 'Intake fruits with more water content');
 
 
-delete from prms_db.prestb where ID=0
+delete from prms_db.doctb where email='s@gmail.com'

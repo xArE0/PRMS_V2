@@ -6,7 +6,7 @@
 		$dname = $_POST['username3'];
 		$dpass = $_POST['password3'];
 
-		$query = "SELECT * FROM prms_db.doctb WHERE username=? AND password=?";
+		$query = "SELECT * FROM prms_db.doctb WHERE username=? AND password=? AND working_status=1";
 		$stmt = mysqli_prepare($con, $query);
 		mysqli_stmt_bind_param($stmt, "ss", $dname, $dpass);
 		mysqli_stmt_execute($stmt);
