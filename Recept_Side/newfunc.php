@@ -34,6 +34,7 @@ function display_docs()
   }
 }
 
+
 if (isset($_POST['doc_sub'])) {
   $username = $_POST['username'];
   $query = "insert into doctb(username)values('$username')";

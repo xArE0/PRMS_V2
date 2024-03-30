@@ -543,7 +543,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                   <th scope="col">Appointment Date</th>
                   <th scope="col">Appointment Time</th>
                   <th scope="col">Appointment Status</th>
-                  <th scope="col">Modify Appointment</th>
+                  <th scope="col">Approve Appointment</th>
                 </tr>
               </thead>
               <tbody>
@@ -583,15 +583,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                     <td>
                       <!-- Approve button -->
                       <?php if ($row['approve_status'] == 0) { ?>
-                        <button id="approveBtn_<?php echo $row['ID']; ?>" class="btn btn-success" onclick="approveAppointment('<?php echo $row['ID']; ?>')">A</button>
+                        <button id="approveBtn_<?php echo $row['ID']; ?>" class="btn btn-success" onclick="approveAppointment('<?php echo $row['ID']; ?>')">Approve</button>
                       <?php } else { ?>
                         <!-- Disable the button if appointment is already approved -->
                         <button class="btn btn-secondary" disabled>Approved</button>
-                      <?php } ?>                    
+                      <?php } ?>
                     </td>
                   </tr>
                 <?php } ?>
-
               </tbody>
             </table>
             <br>
@@ -611,7 +610,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                   // Update button appearance and status on success
-                  document.getElementById('approveBtn_' + appointmentID).innerText = 'D';
+                  document.getElementById('approveBtn_' + appointmentID).innerText = 'Approved';
                   document.getElementById('approveBtn_' + appointmentID).classList.remove('btn-success');
                   document.getElementById('approveBtn_' + appointmentID).classList.add('btn-secondary');
                 }
@@ -735,7 +734,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                       <!-- Script to update Consultancy fees according to doctor selected -->
                       <script>
                         document.getElementById('doctor').onchange = function updateFees(e) {
-                          var selection = document.querySelector(`[value=${this.value}]`).getAttribute('data-value');
+                          var selectedOption = document.querySelector(`option[value="${this.value}"]`);
+                          var selection = selectedOption.getAttribute('data-value');
                           document.getElementById('docFees').value = selection;
                         };
                       </script>
