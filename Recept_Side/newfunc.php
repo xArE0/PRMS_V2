@@ -24,7 +24,7 @@ function display_specs()
 function display_docs()
 {
   global $con;
-  $query = "select * from doctb";
+  $query = "select * from doctb where working_status=1";
   $result = mysqli_query($con, $query);
   while ($row = mysqli_fetch_array($result)) {
     $username = $row['username'];

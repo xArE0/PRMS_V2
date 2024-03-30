@@ -4,6 +4,8 @@ USE prms_db;
 
 select a.ID,a.pid,d.spec,d.username,d.docFees,a.appdate,a.apptime from appointmenttb as a JOIN doctb as d ON a.doctor=d.username; 
 
+UPDATE doctb set working_status=0 Where 
+
 CREATE TABLE `admintb` (
   `username` varchar(50) NOT NULL,
   `password` varchar(30) NOT NULL
