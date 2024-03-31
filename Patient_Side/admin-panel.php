@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 session_start();
-include ("newfunc.php");
+include("newfunc.php");
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
 $pid = $_SESSION['pid'];
@@ -11,7 +11,6 @@ $fname = $_SESSION['fname'];
 $gender = $_SESSION['gender'];
 $lname = $_SESSION['lname'];
 $contact = $_SESSION['contact'];
-
 
 if (isset($_POST['app-submit'])) {
   $pid = $_SESSION['pid'];
@@ -63,19 +62,19 @@ function get_specs()
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="../font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="style.css">
   <!-- Bootstrap CSS -->
 
-  <link rel="stylesheet" href="vendor/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../vendor/fontawesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> Global Hospital </a>
+    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> PRMS</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -195,14 +194,8 @@ function get_specs()
                   </div>
                 </div>
               </div>
-
-
             </div>
           </div>
-
-
-
-
 
           <div class="tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
             <div class="container-fluid">
@@ -265,7 +258,6 @@ function get_specs()
                         </select>
                       </div><br /><br />
 
-
                       <script>
                         document.getElementById('doctor').onchange = function updateFees(e) {
                           var selection = document.querySelector(`[value=${this.value}]`).getAttribute('data-value');
@@ -322,11 +314,6 @@ function get_specs()
                 $query = "select ID,doctor,docFees,appdate,apptime,userStatus,doctorStatus from appointmenttb where fname ='$fname' and lname='$lname';";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
-
-                  #$fname = $row['fname'];
-                  #$lname = $row['lname'];
-                  #$email = $row['email'];
-                  #$contact = $row['contact'];
                 ?>
                   <tr>
                     <td><?php echo $row['doctor']; ?></td>
@@ -364,8 +351,6 @@ function get_specs()
             </table>
             <br>
           </div>
-
-
 
           <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <table class="table table-hover">
@@ -428,9 +413,6 @@ function get_specs()
             </table>
             <br>
           </div>
-
-
-
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
           <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
