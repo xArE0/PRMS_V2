@@ -169,7 +169,7 @@ if (isset($_GET['cancel'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
                 $dname = $_SESSION['dname'];
-                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname';";
+                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname'";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>

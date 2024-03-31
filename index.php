@@ -134,16 +134,16 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Last Name *" name="lname" onkeydown="return alphaOnly(event);" required />
+                                        <input type="text" class="form-control" placeholder="Last Name *" name="lname" onkeydown="return alphaOnly(event);" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="tel" minlength="10" maxlength="10" name="contact" class="form-control" placeholder="Your Phone *" />
+                                        <input type="tel" minlength="10" maxlength="10" name="contact" class="form-control" placeholder="Your Phone *">
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password *" name="cpassword" onkeyup='check();' required /><span id='message'></span>
                                     </div>
-                                    <input type="submit" class="btnRegister" name="patsub1" onclick="return checklen();" value="Register" />
+                                    <input type="submit" class="btnRegister" name="patsub1" onclick="return checklen();" value="Register">
                                 </div>
 
                             </div>

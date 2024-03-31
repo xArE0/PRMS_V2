@@ -58,6 +58,7 @@ function get_specs()
 
 ?>
 <html lang="en">
+<title>Patient-Dashboard</title>
 
 <head>
   <!-- Required meta tags -->
@@ -311,7 +312,7 @@ function get_specs()
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
 
-                $query = "select ID,doctor,docFees,appdate,apptime,userStatus,doctorStatus from appointmenttb where fname ='$fname' and lname='$lname';";
+                $query = "select ID,doctor,docFees,appdate,apptime,userStatus,doctorStatus from appointmenttb where fname ='$fname' and lname='$lname'";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -333,10 +334,8 @@ function get_specs()
                         echo "Cancelled by Doctor";
                       }
                       ?></td>
-
                     <td>
                       <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) { ?>
-
 
                         <a href="admin-panel.php?ID=<?php echo $row['ID'] ?>&cancel=update" onClick="return confirm('Are you sure you want to cancel this appointment ?')" title="Cancel Appointment" tooltip-placement="top" tooltip="Remove"><button class="btn btn-danger">Cancel</button></a>
                       <?php } else {
@@ -356,7 +355,6 @@ function get_specs()
             <table class="table table-hover">
               <thead>
                 <tr>
-
                   <th scope="col">Doctor Name</th>
                   <th scope="col">Appointment ID</th>
                   <th scope="col">Appointment Date</th>
@@ -392,20 +390,13 @@ function get_specs()
                     <td><?php echo $row['allergy']; ?></td>
                     <td><?php echo $row['prescription']; ?></td>
                     <td>
-                      <form method="get">
-                        <!-- <a href="admin-panel.php?ID=" 
-                              onClick=""
-                              title="Pay Bill" tooltip-placement="top" tooltip="Remove"><button class="btn btn-success">Pay</button>
-                              </a></td> -->
-
+                      <form method="get">                    
                         <a href="admin-panel.php?ID=<?php echo $row['ID'] ?>">
                           <input type="hidden" name="ID" value="<?php echo $row['ID'] ?>" />
                           <input type="submit" onclick="alert('Bill Paid Successfully');" name="generate_bill" class="btn btn-success" value="Pay Bill" />
                         </a>
                     </td>
                     </form>
-
-
                   </tr>
                 <?php }
                 ?>
@@ -435,9 +426,6 @@ function get_specs()
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js">
   </script>
-
-
-
 </body>
 
 </html>

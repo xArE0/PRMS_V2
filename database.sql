@@ -27,7 +27,7 @@ CREATE TABLE prms_db.appointmenttb (
   apptime TIME NOT NULL,
   userStatus INT NOT NULL,
   doctorStatus INT NOT NULL,
-  approve_status INT NOT NULL DEFAULT 1
+  approve_status INT NOT NULL DEFAULT 0
 );
 
 INSERT INTO prms_db.appointmenttb (pid, ID, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus,approve_status) VALUES
