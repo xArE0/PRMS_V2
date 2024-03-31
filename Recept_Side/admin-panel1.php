@@ -408,7 +408,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                 <?php
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
-                $query = "select * from doctb where working_status=1";
+                $query = "select * from prms_db.doctb where working_status=1";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                   $username = $row['username'];
