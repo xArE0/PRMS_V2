@@ -13,7 +13,7 @@ if (isset($_POST['patsub1'])) {
   $check_query = "SELECT * FROM patreg WHERE email='$email'";
   $check_result = mysqli_query($con, $check_query);
   if (mysqli_num_rows($check_result) > 0) {
-    echo "<script> alert('An account with this email already exists');window.location.href = 'Patient_Side/admin-panel.php';</script>";
+    echo "<script> alert('An account with this email already exists');window.location.href = 'index.php';</script>";
     exit();
   }
 
@@ -21,13 +21,7 @@ if (isset($_POST['patsub1'])) {
     $query = "INSERT INTO patreg(fname,lname,gender,email,contact,password,cpassword) VALUES ('$fname','$lname','$gender','$email','$contact','$password','$cpassword')";
     $result = mysqli_query($con, $query);
     if ($result) {
-      $_SESSION['username'] = $fname . " " . $lname;
-      $_SESSION['fname'] = $fname;
-      $_SESSION['lname'] = $lname;
-      $_SESSION['gender'] = $gender;
-      $_SESSION['contact'] = $contact;
-      $_SESSION['email'] = $email;
-      header("Location: admin-panel.php");
+      echo "<script> alert('Registration Successful');window.location.href = 'index.php';</script>";
       exit();
     } else {
       echo "<script> alert('Error Registrating');window.location.href = 'index.php';</script>";
