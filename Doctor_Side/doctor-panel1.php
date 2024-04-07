@@ -220,8 +220,6 @@ if (isset($_GET['cancel'])) {
                       } ?>
 
                     </td>
-
-
                   </tr></a>
                 <?php } ?>
               </tbody>
@@ -229,15 +227,11 @@ if (isset($_GET['cancel'])) {
             <br>
           </div>
 
-
-
           <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <table class="table table-hover">
               <thead>
                 <tr>
-
                   <th scope="col">Patient ID</th>
-
                   <th scope="col">First Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">Appointment ID</th>
@@ -331,10 +325,6 @@ if (isset($_GET['cancel'])) {
             </table>
             <br>
           </div>
-
-
-
-
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
           <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
