@@ -6,7 +6,7 @@ $doctor = $_SESSION['dname'];
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set doctorStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
-    echo "<script>alert('Your appointment successfully cancelled');window.location.href = 'doctor-panel1.php';</script>";    
+    echo "<script>alert('Your appointment successfully cancelled');window.location.href = 'doctor-panel1.php';</script>";
   }
 }
 ?>
@@ -244,44 +244,36 @@ if (isset($_GET['cancel'])) {
               </thead>
               <tbody>
                 <?php
-
-                $con = mysqli_connect("localhost", "root", "", "prms_db");
-                global $con;
-
-                $query = "select pid,fname,lname,ID,appdate,apptime,disease,allergy,prescription from prestb where doctor='$doctor';";
-
+                $query = "SELECT pid, fname, lname, ID, appdate, apptime, disease, allergy, prescription FROM prestb WHERE doctor = '$doctor'";
                 $result = mysqli_query($con, $query);
-                if (!$result) {
-                  echo mysqli_error($con);
-                }
 
-
-                while ($row = mysqli_fetch_array($result)) {
+                if ($result) {
+                  while ($row = mysqli_fetch_array($result)) {
                 ?>
-                  <tr>
-                    <td><?php echo $row['pid']; ?></td>
-                    <td><?php echo $row['fname']; ?></td>
-                    <td><?php echo $row['lname']; ?></td>
-                    <td><?php echo $row['ID']; ?></td>
-
-                    <td><?php echo $row['appdate']; ?></td>
-                    <td><?php echo $row['apptime']; ?></td>
-                    <td><?php echo $row['disease']; ?></td>
-                    <td><?php echo $row['allergy']; ?></td>
-                    <td><?php echo $row['prescription']; ?></td>
-
-                  </tr>
-                <?php }
+                    <tr data-toggle="modal" data-target="#patientDetailsModal" onclick="displayPatientDetails(<?php echo $row['pid']; ?>)">
+                      <td><?php echo $row['pid']; ?></td>
+                      <td><?php echo $row['fname']; ?></td>
+                      <td><?php echo $row['lname']; ?></td>
+                      <td><?php echo $row['ID']; ?></td>
+                      <td><?php echo $row['appdate']; ?></td>
+                      <td><?php echo $row['apptime']; ?></td>
+                      <td><?php echo $row['disease']; ?></td>
+                      <td><?php echo $row['allergy']; ?></td>
+                      <td><?php echo $row['prescription']; ?></td>
+                    </tr>
+                <?php
+                  }
+                } else {
+                  echo "Error fetching data: " . mysqli_error($con);
+                }
+                mysqli_close($con);
                 ?>
               </tbody>
             </table>
+            <br>
           </div>
 
-
-
-
           <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-pat-list">
-
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -347,9 +339,63 @@ if (isset($_GET['cancel'])) {
       </div>
     </div>
   </div>
+
+  <!-- Testing the user detail popup thing -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="patientDetailsModalLabel">Patient Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="patientDetails">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    // JavaScript function to fetch and display patient details in the modal
+    function displayPatientDetails(patientID) {
+      console.log('Fetching patient details for ID:', patientID);
+      // AJAX request to fetch patient details from server
+      $.ajax({
+        url: 'patient_details.php',
+        method: 'POST',
+        data: {
+          patientID: patientID
+        },
+        success: function(response) {
+          // Display patient details in the modal
+          console.log('Response from server:', response);
+          $('#patientDetails').html(response);
+          $('#patientDetailsModal').modal('show'); // Show the modal
+          console.log('Modal shown');
+        },
+        error: function(xhr, status, error) {
+          // Handle error
+          console.error('Error:', xhr.responseText);
+        }
+      });
+    }
+  </script>
+
+
+
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Replaced the jquery for a full version as above -->
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
