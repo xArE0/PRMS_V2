@@ -565,11 +565,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                   <th scope="col">Gender</th>
                   <th scope="col">Contact</th>
                   <th scope="col">Doctor Name</th>
-                  <th scope="col">Consultancy Fees</th>
                   <th scope="col">Appointment Date</th>
                   <th scope="col">Appointment Time</th>
                   <th scope="col">Appointment Status</th>
                   <th scope="col">Approve Appointment</th>
+                  <th scope="col">Cancel</th>
                 </tr>
               </thead>
               <tbody>
@@ -590,7 +590,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                     <td><?php echo $row['gender']; ?></td>
                     <td><?php echo $row['contact']; ?></td>
                     <td><?php echo $row['doctor']; ?></td>
-                    <td><?php echo $row['docFees']; ?></td>
                     <td><?php echo $row['appdate']; ?></td>
                     <td><?php echo $row['apptime']; ?></td>
                     <td>
@@ -614,7 +613,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                         <!-- Disable the button if appointment is already approved -->
                         <button class="btn btn-secondary" disabled>Approved</button>
                       <?php } ?>
+                      
                     </td>
+
+                    <td>
+                      <button class="btn btn-info">hello</button>
+                    </td>
+
                   </tr>
                 <?php } ?>
               </tbody>
@@ -622,7 +627,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
             <br>
           </div>
 
-          <!-- Script to change the Buttons from Aprrove to Approved -->
+          <!-- Script to change the Buttons from Approve to Approved -->
           <script>
             // Function to handle approve button click
             function approveAppointment(appointmentID) {
