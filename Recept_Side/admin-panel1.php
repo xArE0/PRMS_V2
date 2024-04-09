@@ -6,31 +6,31 @@ include('newfunc.php');
 
 // Add new doctor
 if (isset($_POST['docsub'])) {
-    $doctor = $_POST['doctor'];
-    $dpassword = $_POST['dpassword'];
-    $demail = $_POST['demail'];
-    $spec = $_POST['special'];
-    $docFees = $_POST['docFees'];
+  $doctor = $_POST['doctor'];
+  $dpassword = $_POST['dpassword'];
+  $demail = $_POST['demail'];
+  $spec = $_POST['special'];
+  $docFees = $_POST['docFees'];
 
-    // Check if email already exists
-    $email_check_query = "SELECT * FROM doctb WHERE email='$demail' LIMIT 1";
-    $result = mysqli_query($con, $email_check_query);
-    $doctor_record = mysqli_fetch_assoc($result);
+  // Check if email already exists
+  $email_check_query = "SELECT * FROM doctb WHERE email='$demail' LIMIT 1";
+  $result = mysqli_query($con, $email_check_query);
+  $doctor_record = mysqli_fetch_assoc($result);
 
-    if ($doctor_record) {
-        // Email already exists, display an error message        
-        echo "<script>alert('Email already exists!');window.location.href = 'admin-panel1.php';</script>";
+  if ($doctor_record) {
+    // Email already exists, display an error message        
+    echo "<script>alert('Email already exists!');window.location.href = 'admin-panel1.php';</script>";
+  } else {
+    // Email does not exist, proceed with inserting the new doctor record
+    $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
+    $result = mysqli_query($con, $query);
+    if ($result) {
+      echo "<script>alert('Doctor added successfully!');window.location.href = 'admin-panel1.php';</script>";
     } else {
-        // Email does not exist, proceed with inserting the new doctor record
-        $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
-        $result = mysqli_query($con, $query);
-        if ($result) {
-            echo "<script>alert('Doctor added successfully!');window.location.href = 'admin-panel1.php';</script>";
-        } else {
-            // Failed to insert doctor record
-            echo "<script>alert('Failed to add doctor!');window.location.href = 'admin-panel1.php';</script>";            
-        }
+      // Failed to insert doctor record
+      echo "<script>alert('Failed to add doctor!');window.location.href = 'admin-panel1.php';</script>";
     }
+  }
 }
 
 // Delete a doctor
@@ -270,7 +270,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
 
 <body style="padding-top:50px;">
   <div class="container-fluid" style="margin-top:50px;">
-    <h3 style="margin-left: 40%; padding-bottom: 20px;font-family: 'IBM Plex Sans', sans-serif;"> WELCOME RECEPTIONIST </h3>
+    <h2 style="margin-left: 40%; padding-bottom:0px;font-family: 'IBM Plex Sans', sans-serif;"> WELCOME RECEPTIONIST </h2>
     <div class="row">
       <div class="col-md-4" style="max-width:25%;margin-top: 3%;">
         <div class="list-group" id="list-tab" role="tablist">
@@ -290,99 +290,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
       <div class="col-md-8" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
           <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
-            <div class="container-fluid container-fullw bg-white">
-              <div class="row">
-                <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Doctor List</h4>
-
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script>
-
-                      <p class="links cl-effect-1">
-                        <a href="#list-doc" onclick="clickDiv('#list-doc-list')">
-                          View Doctors
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-4" style="left: -3%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Patient List</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-pat-list')">
-                          View Patients
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Appointment Details</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-app-list')">
-                          View Appointments
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-
-              <div class="row">
-                <div class="col-sm-4" style="left: 13%;margin-top: 5%;">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Prescription List</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          View Prescriptions
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="col-sm-4" style="left: 18%;margin-top: 5%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-plus fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Manage Accounts</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-adoc-list')">Add Doctors</a>
-                        &nbsp|
-                        <a href="#app-hist" onclick="clickDiv('#list-ddoc-list')">
-                          Delete
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            <div class="container-fluid container-fullw bg-black">
+              <div class="welcome">
+                <!-- Image with class "welcome-img" to fit perfectly inside the welcome div -->
+                <img src="../assets/images/welcome.jpg" class="welcome-img" alt="Welcome Image">
               </div>
             </div>
           </div>
+
+          <style>
+            .welcome-img {
+              width: 1190px;
+              max-width: 150%;
+              height: auto;
+              display: block;
+              margin: 0 auto;
+            }
+          </style>
 
           <div class="tab-pane fade" id="list-doc" role="tabpanel" aria-labelledby="list-home-list">
 
@@ -613,7 +537,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                         <!-- Disable the button if appointment is already approved -->
                         <button class="btn btn-secondary" disabled>Approved</button>
                       <?php } ?>
-                      
+
                     </td>
 
                     <td>
