@@ -1,3 +1,48 @@
+<?php
+// Database connection
+$conn = mysqli_connect("localhost", "root", "", "prms_db");
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    if (isset($_FILES["fileToUpload"]) && $_FILES["fileToUpload"]["error"] == 0) {
+        // Get image data
+        $imageData = addslashes(file_get_contents($_FILES["fileToUpload"]["tmp_name"]));
+
+        // Update picture for pid = 15
+        $pid = 11;
+        $sql = "UPDATE patreg SET picture = '$imageData' WHERE pid = $pid";
+
+        // Execute query
+        if (mysqli_query($conn, $sql)) {
+            // Fetch the updated image data
+            $sql = "SELECT picture FROM patreg WHERE pid = $pid";
+            $result = mysqli_query($conn, $sql);
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+                $imageData = $row['picture'];
+                // Display the uploaded image immediately after upload
+                echo '<img src="data:image/jpeg;base64,' . base64_encode($imageData) . '" alt="Uploaded Image" />';
+            } else {
+                echo "Error retrieving image.";
+            }
+        } else {
+            echo "Error uploading image: " . mysqli_error($conn);
+        }
+    } else {
+        echo "Error uploading image.";
+    }
+}
+
+// Close connection
+mysqli_close($conn);
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,20 +68,25 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-4">
-                <!-- User Photo -->
+                <?php
+                    $res=mysqli_query(;)
+                ?>
             </div>
             <div class="col">
-                <p><strong>Patient ID:</strong> ' . $row['pid'] . '</p>
-                <p><strong>First Name:</strong> ' . $row['fname'] . '</p>
-                <p><strong>Last Name:</strong> ' . $row['lname'] . '</p>
-                <p><strong>Gender:</strong> ' . $row['gender'] . '</p>
-                <p><strong>Email:</strong> ' . $row['email'] . '</p>
+                <p><strong>Patient ID:</strong></p>
+                <p><strong>First Name:</strong></p>
+                <p><strong>Last Name:</strong></p>
+                <p><strong>Gender:</strong></p>
+                <p><strong>Email:</strong></p>
             </div>
         </div>
 
         <div class="row">
             <!-- Table that contains user all prescription by that doctor -->
-            do
+            <form action="test.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload">
+                <input type="submit" value="Upload Image" name="submit">
+            </form>
         </div>
     </div>
 

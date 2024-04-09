@@ -32,9 +32,8 @@
             return ((key >= 65 && key <= 90) || key == 8 || key == 32);
         };
 
-        function numOnly(event)
-        {
-            var key=event.keyCode;
+        function numOnly(event) {
+            var key = event.keyCode;
             return ((key >= 48 && key <= 57) || key == 8 || key == 32);
         };
 
@@ -121,6 +120,9 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control" placeholder="Password *" id="password" name="password" onkeyup='check();' required />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" name="fileToUpload" id="fileToUpload">                             
                                     </div>
 
                                     <div class="form-group">

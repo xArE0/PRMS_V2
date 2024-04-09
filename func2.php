@@ -50,4 +50,32 @@ if (isset($_POST['doc_sub'])) {
   if ($result)
     header("Location:adddoc.php");
 }
+mysqli_close($con);
+?>
+
+<!-- PHP script (upload.php) to handle image upload -->
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  if (isset($_FILES["fileToUpload"]) && $_FILES["fileToUpload"]["error"] == 0) {
+    $image = file_get_contents($_FILES["fileToUpload"]["tmp_name"]);
+
+    $con = mysqli_connect("localhost", "root", "", "prms_db");
+
+    $query = "INSERT INTO patreg(picture) VALUES (?)";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, "b", $image);
+    mysqli_stmt_execute($stmt);
+
+    if (mysqli_stmt_affected_rows($stmt) > 0) {
+      echo "Image uploaded successfully.";
+    } else {
+      echo "Failed to upload image.";
+    }
+
+    mysqli_stmt_close($stmt);
+    mysqli_close($con);
+  } else {
+    echo "Error uploading image.";
+  }
+}
 ?>
