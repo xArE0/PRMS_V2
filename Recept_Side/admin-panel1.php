@@ -559,7 +559,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                     <?php
                     $con = mysqli_connect("localhost", "root", "", "prms_db");
                     global $con;
-                    $query = "select * from prestb";
+                    $query = "select * from prestb ORDER BY apptime DESC LIMIT 5";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
                       $doctor = $row['doctor'];

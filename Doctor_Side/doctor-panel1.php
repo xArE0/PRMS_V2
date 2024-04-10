@@ -345,7 +345,7 @@ if (isset($_GET['cancel'])) {
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="patientDetailsModalLabel">Patient Details</h5>
+          <h4 class="modal-title" id="patientDetailsModalLabel">Patient Details</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -358,7 +358,6 @@ if (isset($_GET['cancel'])) {
       </div>
     </div>
   </div>
-
 
 
   <script>

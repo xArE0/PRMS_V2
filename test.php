@@ -68,9 +68,7 @@ mysqli_close($conn);
     <div class="container-fluid">
         <div class="row">
             <div class="col-4">
-                <?php
-                    $res=mysqli_query(;)
-                ?>
+               <img src="./images/user1.png" alt="">
             </div>
             <div class="col">
                 <p><strong>Patient ID:</strong></p>
