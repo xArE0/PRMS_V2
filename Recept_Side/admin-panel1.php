@@ -367,7 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             .welcome-img {
               position: absolute;
               top: -40px;
-              width: 1190px;
+              width: 1190px; 
               max-width: 200%;
               height: auto;
               display: block;
@@ -378,6 +378,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
 
             body {
               background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
+            }
+
+            .bg-primary{
+              background: -webkit-linear-gradient(left, #242121, #89665082);
             }
           </style>
 
