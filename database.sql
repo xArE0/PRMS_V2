@@ -31,8 +31,9 @@ CREATE TABLE prms_db.appointmenttb (
   docFees INT NOT NULL,
   appdate DATE NOT NULL,
   apptime TIME NOT NULL,
-  userStatus INT NOT NULL,
-  doctorStatus INT NOT NULL,
+  userStatus INT NOT NULL DEFAULT 1,
+  doctorStatus INT NOT NULL DEFAULT 1,
+  receptStatus INT NOT NULL DEFAULT 1,
   approve_status INT NOT NULL DEFAULT 0
 );
 
@@ -91,19 +92,19 @@ INSERT INTO prms_db.admintb (username, password) VALUES
 ('admin', 'admin123'),
 ('avishek','avi123');
 
-INSERT INTO prms_db.appointmenttb (pid, ID, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus,approve_status) VALUES
-(4, 1, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '2020-02-14', '10:00:00', 1, 0,0),
-(4, 2, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-02-28', '10:00:00', 0, 1,0),
-(4, 3, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Amit', 1000, '2020-02-19', '03:00:00', 0, 1,0),
-(11, 4, 'Shraddha', 'Kapoor', 'Female', 'shraddha@gmail.com', '9768946252', 'ashok', 500, '2020-02-29', '20:00:00', 1, 0,1),
-(4, 5, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-02-28', '12:00:00', 1, 1,1),
-(4, 6, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '2020-02-26', '15:00:00', 0, 1,0),
-(2, 8, 'Alia', 'Bhatt', 'Female', 'alia@gmail.com', '8976897689', 'Ganesh', 550, '2020-03-21', '10:00:00', 1, 1,1),
-(5, 9, 'Gautam', 'Shankararam', 'Male', 'gautam@gmail.com', '9070897653', 'Ganesh', 550, '2020-03-19', '20:00:00', 1, 0,0),
-(4, 10, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '0000-00-00', '14:00:00', 1, 0,0),
-(4, 11, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-03-27', '15:00:00', 1, 1,1),
-(9, 12, 'Dipesh', 'Blake', 'Male', 'Dipesh@gmail.com', '8683619153', 'Kumar', 800, '2020-03-26', '12:00:00', 1, 1,0),
-(9, 13, 'Dipesh', 'Blake', 'Male', 'Dipesh@gmail.com', '8683619153', 'Aayush', 450, '2020-03-26', '14:00:00', 1, 1,0);
+INSERT INTO prms_db.appointmenttb (pid, ID, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime) VALUES
+(4, 1, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '2020-02-14', '10:00:00'),
+(4, 2, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-02-28', '10:00:00'),
+(4, 3, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Amit', 1000, '2020-02-19', '03:00:00'),
+(11, 4, 'Shraddha', 'Kapoor', 'Female', 'shraddha@gmail.com', '9768946252', 'ashok', 500, '2020-02-29', '20:00:00'),
+(4, 5, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-02-28', '12:00:00'),
+(4, 6, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '2020-02-26', '15:00:00'),
+(2, 8, 'Alia', 'Bhatt', 'Female', 'alia@gmail.com', '8976897689', 'Ganesh', 550, '2020-03-21', '10:00:00'),
+(5, 9, 'Gautam', 'Shankararam', 'Male', 'gautam@gmail.com', '9070897653', 'Ganesh', 550, '2020-03-19', '20:00:00'),
+(4, 10, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Ganesh', 550, '0000-00-00', '14:00:00'),
+(4, 11, 'Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'Dinesh', 700, '2020-03-27', '15:00:00'),
+(9, 12, 'Dipesh', 'Blake', 'Male', 'Dipesh@gmail.com', '8683619153', 'Kumar', 800, '2020-03-26', '12:00:00'),
+(9, 13, 'Dipesh', 'Blake', 'Male', 'Dipesh@gmail.com', '8683619153', 'Aayush', 450, '2020-03-26', '14:00:00');
 
 INSERT INTO prms_db.contact (name, email, contact, message) VALUES
 ('Anu', 'anu@gmail.com', '7896677554', 'Hey Admin'),

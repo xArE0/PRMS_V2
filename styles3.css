@@ -27,13 +27,15 @@ body {
 }
 .register-right{
     background: #f8f9fa;
-    border-top-left-radius: 10% 50%;
-    border-bottom-left-radius: 10% 50%;
+    border-top-left-radius: 90px;
+    border-bottom-right-radius: 90px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 .register-left img{
     margin-top: 15%;
     margin-bottom: 5%;
-    width: 25%;
+    width: 35%;
     -webkit-animation: mover 2s infinite  alternate;
     animation: mover 1s infinite  alternate;
 }
@@ -60,7 +62,7 @@ body {
     border: none;
     border-radius: 1.5rem;
     padding: 2%;
-    background: #0062cc;
+    background: #1e9cd6;
     color: #fff;
     font-weight: 600;
     width: 50%;
@@ -69,7 +71,7 @@ body {
 .register .nav-tabs{
     margin-top: 3%;
     border: none;
-    background: #0062cc;
+    background: #1e9cd6;
     border-radius: 1.5rem;
     width: 28%;
     float: right;
@@ -87,8 +89,8 @@ body {
 }
 .register .nav-tabs .nav-link.active{
     width: 120px;
-    color: #0062cc;
-    border: 2px solid #0062cc;
+    color: #28626d;
+    border: 2px solid #2801fd;
     border-top-left-radius: 1.5rem;
     border-bottom-left-radius: 1.5rem;
 }

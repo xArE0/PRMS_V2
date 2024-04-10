@@ -122,7 +122,7 @@
                                         <input type="password" class="form-control" placeholder="Password *" id="password" name="password" onkeyup='check();' required />
                                     </div>
                                     <div class="form-group">
-                                        <input type="file" name="fileToUpload" id="fileToUpload">                             
+                                        <input type="file" name="fileToUpload" id="fileToUpload">
                                     </div>
 
                                     <div class="form-group">
