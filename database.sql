@@ -64,7 +64,7 @@ CREATE TABLE prms_db.patreg (
   contact VARCHAR(10) NOT NULL,
   password VARCHAR(30) NOT NULL,
   cpassword VARCHAR(30) NOT NULL,
-  picture VARCHAR(100) DEFAULT NULL,
+  picture LONGBLOB DEFAULT NULL,
   active_status INT NOT NULL DEFAULT 1
 );
 
