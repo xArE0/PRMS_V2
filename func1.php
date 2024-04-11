@@ -15,6 +15,7 @@
 		if (mysqli_num_rows($result) > 0) {
 			$row = mysqli_fetch_assoc($result);
 			$_SESSION['dname'] = $row['username'];
+			$_SESSION['docid'] = $row['docid'];
 			header("Location: ./Doctor_Side/doctor-panel1.php");
 			exit();
 		} else {

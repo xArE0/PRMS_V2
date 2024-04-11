@@ -57,6 +57,48 @@ function get_specs()
 }
 
 ?>
+
+<!-- Insert Image into the database -->
+<?php
+if (isset($_POST['upload'])) {
+  $userID = $_SESSION['pid'];
+
+  // Check if file is selected
+  if ($_FILES['photo']['name'] != '') {
+    $file_name = $_FILES['photo']['name'];
+    $file_size = $_FILES['photo']['size'];
+    $file_tmp = $_FILES['photo']['tmp_name'];
+    $file_type = $_FILES['photo']['type'];
+
+    // Specify the directory where the file will be stored
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($file_name);
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+      echo "<script>alert('This Photo Already Exists! '); window.location.href = 'admin-panel.php';</script>";
+    } else {
+      // Move the uploaded file to the specified directory
+      move_uploaded_file($file_tmp, $target_file);
+
+      // Update the user's photo path in the database
+      $con = mysqli_connect("localhost", "root", "", "prms_db");
+      $query = "UPDATE patreg SET picture='$target_file' WHERE pid=$userID";
+      mysqli_query($con, $query);
+
+      // Close the database connection
+      mysqli_close($con);
+
+      echo "<script>alert('Photo Uploaded Successfully!'); window.location.href = 'admin-panel.php';</script>";
+    }
+  } else {
+    echo "<script>alert('Please Choose a Photo! '); window.location.href = 'admin-panel.php';</script>";
+  }
+}
+?>
+
+
+
 <html lang="en">
 <title>Patient-Dashboard</title>
 
@@ -75,21 +117,34 @@ function get_specs()
 
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> PRMS</a>
+    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> <b>Patient Record Management System</b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <style>
+      .welcome-img {
+        position: absolute;
+        right: -10px;
+        top: -60px;
+        width: 1200px;
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        opacity: 70%;
+        z-index: -1;
+      }
+
       .bg-primary {
-        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+        background: -webkit-linear-gradient(left, #242121, #89665082);
       }
 
       .list-group-item.active {
         z-index: 2;
         color: #fff;
-        background-color: #342ac1;
-        border-color: #007bff;
+        background-color: #1e9cd6;
+        border-color: #00ffdb;
       }
 
       .text-primary {
@@ -99,6 +154,36 @@ function get_specs()
       .btn-primary {
         background-color: #3c50c1;
         border-color: #3c50c1;
+      }
+
+      .list-group {
+        line-height: 2.1;
+      }
+
+      .list-group {
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+        line-height: 2.6;
+      }
+
+      .col-md-4 {
+        max-width: 20% !important;
+      }
+
+      .card-body {
+        background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
+        width: 100%;
+      }
+
+      .form-control {
+        width: 90%;
+      }
+
+      .navbar-dark .navbar-brand {
+        font-size: 24px;
       }
     </style>
 
@@ -133,70 +218,103 @@ function get_specs()
       <div class="col-md-4" style="max-width:25%; margin-top: 3%">
         <div class="list-group" id="list-tab" role="tablist">
           <a class="list-group-item list-group-item-action active" id="list-dash-list" data-toggle="list" href="#list-dash" role="tab" aria-controls="home">Dashboard</a>
+          <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your Profile</a>
           <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Book Appointment</a>
           <a class="list-group-item list-group-item-action" href="#app-hist" id="list-pat-list" role="tab" data-toggle="list" aria-controls="home">Appointment History</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescriptions</a>
 
         </div><br>
       </div>
-      <div class="col-md-8" style="margin-top: 3%;">
-        <div class="tab-content" id="nav-tabContent" style="width: 950px;">
+      <div class="col-md-9" style="margin-top: 3%;">
+        <div class="tab-content" id="nav-tabContent" style="width: 90%;">
+          <style>
+            body {
+              background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
+            }
+          </style>
 
-
-          <div class="tab-pane fade  show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
+          <!-- Dashboard Content -->
+          <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
             <div class="container-fluid container-fullw bg-white">
-              <div class="row">
-                <div class="col-sm-4" style="left: 5%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-terminal fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;"> Book My Appointment</h4>
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script>
-                      <p class="links cl-effect-1">
-                        <a href="#list-home" onclick="clickDiv('#list-home-list')">
-                          Book Appointment
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-4" style="left: 10%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">My Appointments</h2>
-
-                        <p class="cl-effect-1">
-                          <a href="#app-hist" onclick="clickDiv('#list-pat-list')">
-                            View Appointment History
-                          </a>
-                        </p>
-                    </div>
-                  </div>
-                </div>
+              <div class="welcome">
+                <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
               </div>
+            </div>
+          </div>
 
-              <div class="col-sm-4" style="left: 20%;margin-top:5%">
-                <div class="panel panel-white no-radius text-center">
-                  <div class="panel-body">
-                    <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                    <h4 class="StepTitle" style="margin-top: 5%;">Prescriptions</h2>
+          <!-- Your Profile Content-->
+          <?php
+          $con = mysqli_connect("localhost", "root", "", "prms_db");
+          if (!$con) {
+            die("Connection failed: " . mysqli_connect_error());
+          }
 
-                      <p class="cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          View Prescription List
-                        </a>
-                      </p>
+          $userID = $_SESSION['pid'];
+          $query = "SELECT * FROM patreg WHERE pid = $userID";
+          $result = mysqli_query($con, $query);
+
+          if (mysqli_num_rows($result) > 0) {
+            $userData = mysqli_fetch_assoc($result);
+            $firstName = $userData['fname'];
+            $lastName = $userData['lname'];
+            $gender = $userData['gender'];
+            $email = $userData['email'];
+            $contact = $userData['contact'];
+            $picture = !empty($userData['picture']) ? $userData['picture'] : '../assets/images/default-user.png';
+          ?>
+            <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+              <div class="container-fluid container-fullw bg-white">
+                <div class="row" style="padding: 20px; text-align:center; background: -webkit-linear-gradient(left, #b8d9ff, #c4b2b2);">
+                  <h2>Your Profile:</h2>
+                </div>
+                <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
+                  <div class="col-md-3" style="padding: 10px;">
+                    <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
+                    <form method="post" action="admin-panel.php" enctype="multipart/form-data">
+                      <div class="form-group">
+                        <input type="file" class="form-control-file" id="photo" name="photo">
+                      </div>
+                      <button type="submit" class="btn btn-info" name="upload">Upload</button>
+                    </form>
+
+                  </div>
+                  <div class="col">
+                    <div class="row" style="padding: 10px;">
+                      <div class="col-5" style="padding-top: 40px;">
+                        <h4>General Information:</h4>
+                      </div>
+                      <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
+                        <ul>
+                          <li>First Name: <?php echo $firstName; ?></li>
+                          <li>Last Name: <?php echo $lastName; ?></li>
+                          <li>Gender: <?php echo $gender; ?></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="row" style="padding: 19px;">
+                      <div class="col-5" style="padding-top: 40px;">
+                        <h4>Additional Information:</h4>
+                      </div>
+                      <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
+                        <ul>
+                          <li>ID: <?php echo $userID; ?></li>
+                          <li>Email: <?php echo $email; ?></li>
+                          <li>Contact: <?php echo $contact; ?></li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          <?php
+          } else {
+            echo "Failed to Load User Information!.";
+          }
+
+          mysqli_close($con);
+          ?>
+
 
           <div class="tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
             <div class="container-fluid">
@@ -390,7 +508,7 @@ function get_specs()
                     <td><?php echo $row['allergy']; ?></td>
                     <td><?php echo $row['prescription']; ?></td>
                     <td>
-                      <form method="get">                    
+                      <form method="get">
                         <a href="admin-panel.php?ID=<?php echo $row['ID'] ?>">
                           <input type="hidden" name="ID" value="<?php echo $row['ID'] ?>" />
                           <input type="submit" onclick="alert('Bill Paid Successfully');" name="generate_bill" class="btn btn-success" value="Pay Bill" />

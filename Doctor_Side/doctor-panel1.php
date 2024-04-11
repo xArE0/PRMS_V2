@@ -2,11 +2,50 @@
 <?php
 include('../func1.php');
 $con = mysqli_connect("localhost", "root", "", "prms_db");
-$doctor = $_SESSION['dname'];
+$doctor = $_SESSION['docid'];
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set doctorStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
-    echo "<script>alert('Your appointment successfully cancelled');window.location.href = 'doctor-panel1.php';</script>";    
+    echo "<script>alert('Your appointment successfully cancelled');window.location.href = 'doctor-panel1.php';</script>";
+  }
+}
+?>
+
+<!-- Insert Image into the database -->
+<?php
+if (isset($_POST['upload'])) {
+  $userID = $_SESSION['docid'];
+
+  // Check if file is selected
+  if ($_FILES['photo']['name'] != '') {
+    $file_name = $_FILES['photo']['name'];
+    $file_size = $_FILES['photo']['size'];
+    $file_tmp = $_FILES['photo']['tmp_name'];
+    $file_type = $_FILES['photo']['type'];
+
+    // Specify the directory where the file will be stored
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($file_name);
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+      echo "<script>alert('This Photo Already Exists! '); window.location.href = 'doctor-panel1.php';</script>";
+    } else {
+      // Move the uploaded file to the specified directory
+      move_uploaded_file($file_tmp, $target_file);
+
+      // Update the user's photo path in the database
+      $con = mysqli_connect("localhost", "root", "", "prms_db");
+      $query = "UPDATE doctb SET picture='$target_file' WHERE docid=$userID";
+      mysqli_query($con, $query);
+
+      // Close the database connection
+      mysqli_close($con);
+
+      echo "<script>alert('Photo Uploaded Successfully!'); window.location.href = 'doctor-panel1.php';</script>";
+    }
+  } else {
+    echo "<script>alert('Please Choose a Photo! '); window.location.href = 'doctor-panel1.php';</script>";
   }
 }
 ?>
@@ -45,7 +84,11 @@ if (isset($_GET['cancel'])) {
 
     <style>
       .bg-primary {
-        background: -webkit-linear-gradient(left, #6358ba, #005c76);
+        background: -webkit-linear-gradient(left, #242121, #89665082);
+      }
+
+      body {
+        background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
       }
 
       .list-group-item.active {
@@ -84,6 +127,69 @@ if (isset($_GET['cancel'])) {
   #inputbtn:hover {
     cursor: pointer;
   }
+  
+  .welcome-img {
+    position: absolute;
+    right: -10px;
+    top: -60px;
+    width: 1200px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    opacity: 70%;
+    z-index: -1;
+  }
+
+  .bg-primary {
+    background: -webkit-linear-gradient(left, #242121, #89665082);
+  }
+
+  .list-group-item.active {
+    z-index: 2;
+    color: #fff;
+    background-color: #1e9cd6;
+    border-color: #00ffdb;
+  }
+
+  .text-primary {
+    color: #342ac1 !important;
+  }
+
+  .btn-primary {
+    background-color: #3c50c1;
+    border-color: #3c50c1;
+  }
+
+  .list-group {
+    line-height: 2.1;
+  }
+
+  .list-group {
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    line-height: 2.6;
+  }
+
+  .col-md-4 {
+    max-width: 20% !important;
+  }
+
+  .card-body {
+    background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
+    width: 100%;
+  }
+
+  .form-control {
+    width: 90%;
+  }
+
+  .navbar-dark .navbar-brand {
+    font-size: 24px;
+  }
 </style>
 
 <body style="padding-top:50px;">
@@ -93,55 +199,86 @@ if (isset($_GET['cancel'])) {
       <div class="col-md-4" style="max-width:18%;margin-top: 3%;">
         <div class="list-group" id="list-tab" role="tablist">
           <a class="list-group-item list-group-item-action active" href="#list-dash" role="tab" aria-controls="home" data-toggle="list">Dashboard</a>
+          <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your Profile</a>
           <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list" role="tab" data-toggle="list" aria-controls="home">Appointments</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
 
         </div><br>
       </div>
-      <div class="col-md-8" style="margin-top: 3%;">
+      <div class="col-md-9" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
           <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
-
             <div class="container-fluid container-fullw bg-white">
-              <div class="row">
+              <div class="welcome">
+                <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
+              </div>
+            </div>
+          </div>
 
-                <div class="col-sm-4" style="left: 10%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">View Appointments</h4>
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script>
-                      <p class="links cl-effect-1">
-                        <a href="#list-app" onclick="clickDiv('#list-app-list')">
-                          Appointment List
-                        </a>
-                      </p>
-                    </div>
+          <!-- Your Profile Content-->
+          <?php
+          $con = mysqli_connect("localhost", "root", "", "prms_db");
+          if (!$con) {
+            die("Connection failed: " . mysqli_connect_error());
+          }
+
+          $doctorID = $_SESSION['docid'];
+          $query = "SELECT * FROM doctb WHERE docid = $doctorID";
+          $result = mysqli_query($con, $query);
+
+          if (mysqli_num_rows($result) > 0) {
+            $doctorData = mysqli_fetch_assoc($result);
+            $username = $doctorData['username'];
+            $email = $doctorData['email'];
+            $specialization = $doctorData['spec'];
+            $doctorFees = $doctorData['docFees'];
+            $picture = !empty($doctorData['picture']) ? $doctorData['picture'] : '../assets/images/default-user.png';
+          ?>
+            <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+              <div class="container-fluid container-fullw bg-white">
+                <div class="profile" style="width:1100px;">
+                  <div class="row" style="padding: 20px; text-align:center; background: -webkit-linear-gradient(left, #b8d9ff, #c4b2b2);">
+                    <h2>Your Profile:</h2>
                   </div>
-                </div>
+                  <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
+                    <div class="col-md-3" style="padding: 10px;">
+                      <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
+                      <form method="post" action="doctor-panel1.php" enctype="multipart/form-data">
+                        <div class="form-group">
+                          <input type="file" class="form-control-file" id="photo" name="photo">
+                        </div>
+                        <button type="submit" class="btn btn-info" name="upload">Upload</button>
+                      </form>
 
-                <div class="col-sm-4" style="left: 15%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Prescriptions</h4>
-
-                      <p class="links cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          Prescription List
-                        </a>
-                      </p>
+                    </div>
+                    <div class="col">
+                      <div class="row" style="padding: 10px;">
+                        <div class="col-5" style="padding-top: 40px;">
+                          <h4>General Information:</h4>
+                        </div>
+                        <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
+                          <ul>
+                            <li>Doctor ID: <?php echo  $doctorID; ?></li>
+                            <li>Username: <?php echo $username; ?></li>
+                            <li>Email: <?php echo $email; ?></li>
+                            <li>Specialization: <?php echo $specialization; ?></li>
+                            <li>Doctor Fees: <?php echo $doctorFees; ?></li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
               </div>
             </div>
-          </div>
+          <?php
+          } else {
+            echo "Failed to Load Doctor Information!.";
+          }
+
+          mysqli_close($con);
+          ?>
 
 
           <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-home-list">
@@ -220,8 +357,6 @@ if (isset($_GET['cancel'])) {
                       } ?>
 
                     </td>
-
-
                   </tr></a>
                 <?php } ?>
               </tbody>
@@ -229,15 +364,11 @@ if (isset($_GET['cancel'])) {
             <br>
           </div>
 
-
-
           <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <table class="table table-hover">
               <thead>
                 <tr>
-
                   <th scope="col">Patient ID</th>
-
                   <th scope="col">First Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">Appointment ID</th>
@@ -250,44 +381,36 @@ if (isset($_GET['cancel'])) {
               </thead>
               <tbody>
                 <?php
-
-                $con = mysqli_connect("localhost", "root", "", "prms_db");
-                global $con;
-
-                $query = "select pid,fname,lname,ID,appdate,apptime,disease,allergy,prescription from prestb where doctor='$doctor';";
-
+                $query = "SELECT * FROM prestb WHERE doctor = '$doctor'";
                 $result = mysqli_query($con, $query);
-                if (!$result) {
-                  echo mysqli_error($con);
-                }
 
-
-                while ($row = mysqli_fetch_array($result)) {
+                if ($result) {
+                  while ($row = mysqli_fetch_array($result)) {
                 ?>
-                  <tr>
-                    <td><?php echo $row['pid']; ?></td>
-                    <td><?php echo $row['fname']; ?></td>
-                    <td><?php echo $row['lname']; ?></td>
-                    <td><?php echo $row['ID']; ?></td>
-
-                    <td><?php echo $row['appdate']; ?></td>
-                    <td><?php echo $row['apptime']; ?></td>
-                    <td><?php echo $row['disease']; ?></td>
-                    <td><?php echo $row['allergy']; ?></td>
-                    <td><?php echo $row['prescription']; ?></td>
-
-                  </tr>
-                <?php }
+                    <tr data-toggle="modal" data-target="#patientDetailsModal" onclick="displayPatientDetails(<?php echo $row['pid']; ?>)">
+                      <td><?php echo $row['pid']; ?></td>
+                      <td><?php echo $row['fname']; ?></td>
+                      <td><?php echo $row['lname']; ?></td>
+                      <td><?php echo $row['ID']; ?></td>
+                      <td><?php echo $row['appdate']; ?></td>
+                      <td><?php echo $row['apptime']; ?></td>
+                      <td><?php echo $row['disease']; ?></td>
+                      <td><?php echo $row['allergy']; ?></td>
+                      <td><?php echo $row['prescription']; ?></td>
+                    </tr>
+                <?php
+                  }
+                } else {
+                  echo "Error fetching data: " . mysqli_error($con);
+                }
+                mysqli_close($con);
                 ?>
               </tbody>
             </table>
+            <br>
           </div>
 
-
-
-
           <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-pat-list">
-
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -332,10 +455,6 @@ if (isset($_GET['cancel'])) {
             <br>
           </div>
 
-
-
-
-
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
           <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
             <form class="form-group" method="post" action="../Recept_Side/admin-panel1.php">
@@ -357,9 +476,62 @@ if (isset($_GET['cancel'])) {
       </div>
     </div>
   </div>
+
+  <!-- Testing the user detail popup thing -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="patientDetailsModalLabel">Patient Details</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="patientDetails">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // JavaScript function to fetch and display patient details in the modal
+    function displayPatientDetails(patientID) {
+      console.log('Fetching patient details for ID:', patientID);
+      // AJAX request to fetch patient details from server
+      $.ajax({
+        url: 'patient_details.php',
+        method: 'POST',
+        data: {
+          patientID: patientID
+        },
+        success: function(response) {
+          // Display patient details in the modal
+          console.log('Response from server:', response);
+          $('#patientDetails').html(response);
+          $('#patientDetailsModal').modal('show'); // Show the modal
+          console.log('Modal shown');
+        },
+        error: function(xhr, status, error) {
+          // Handle error
+          console.error('Error:', xhr.responseText);
+        }
+      });
+    }
+  </script>
+
+
+
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Replaced the jquery for a full version as above -->
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>

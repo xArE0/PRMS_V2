@@ -6,31 +6,31 @@ include('newfunc.php');
 
 // Add new doctor
 if (isset($_POST['docsub'])) {
-    $doctor = $_POST['doctor'];
-    $dpassword = $_POST['dpassword'];
-    $demail = $_POST['demail'];
-    $spec = $_POST['special'];
-    $docFees = $_POST['docFees'];
+  $doctor = $_POST['doctor'];
+  $dpassword = $_POST['dpassword'];
+  $demail = $_POST['demail'];
+  $spec = $_POST['special'];
+  $docFees = $_POST['docFees'];
 
-    // Check if email already exists
-    $email_check_query = "SELECT * FROM doctb WHERE email='$demail' LIMIT 1";
-    $result = mysqli_query($con, $email_check_query);
-    $doctor_record = mysqli_fetch_assoc($result);
+  // Check if email already exists
+  $email_check_query = "SELECT * FROM doctb WHERE email='$demail' LIMIT 1";
+  $result = mysqli_query($con, $email_check_query);
+  $doctor_record = mysqli_fetch_assoc($result);
 
-    if ($doctor_record) {
-        // Email already exists, display an error message        
-        echo "<script>alert('Email already exists!');window.location.href = 'admin-panel1.php';</script>";
+  if ($doctor_record) {
+    // Email already exists, display an error message        
+    echo "<script>alert('Email already exists!');window.location.href = 'admin-panel1.php';</script>";
+  } else {
+    // Email does not exist, proceed with inserting the new doctor record
+    $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
+    $result = mysqli_query($con, $query);
+    if ($result) {
+      echo "<script>alert('Doctor added successfully!');window.location.href = 'admin-panel1.php';</script>";
     } else {
-        // Email does not exist, proceed with inserting the new doctor record
-        $query = "INSERT INTO doctb(username,password,email,spec,docFees) VALUES ('$doctor','$dpassword','$demail','$spec','$docFees')";
-        $result = mysqli_query($con, $query);
-        if ($result) {
-            echo "<script>alert('Doctor added successfully!');window.location.href = 'admin-panel1.php';</script>";
-        } else {
-            // Failed to insert doctor record
-            echo "<script>alert('Failed to add doctor!');window.location.href = 'admin-panel1.php';</script>";            
-        }
+      // Failed to insert doctor record
+      echo "<script>alert('Failed to add doctor!');window.location.href = 'admin-panel1.php';</script>";
     }
+  }
 }
 
 // Delete a doctor
@@ -150,8 +150,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
 }
 ?>
 
-
-
 <!-- Code to Approve Mechanism in Appointment Details Section of Sidebar -->
 <?php
 // Establish database connection
@@ -169,6 +167,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
   mysqli_close($con);
 }
 ?>
+
+<!-- Code for Cancel Mechanism in Appointment Details Section of the Sidebar -->
+<?php
+// Establish database connection
+$con = mysqli_connect("localhost", "root", "", "prms_db");
+if (!$con) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])) { // Change the parameter name here
+  $appointmentID = mysqli_real_escape_string($con, $_POST['cancelAppointmentID']);
+  $update_query = "UPDATE appointmenttb SET receptStatus = 0 WHERE ID = '$appointmentID'";
+  mysqli_query($con, $update_query);
+  mysqli_close($con);
+}
+?>
+
+
 
 <html lang="en">
 
@@ -214,7 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
 
     <style>
       .bg-primary {
-        background: -webkit-linear-gradient(left, #6358ba, #005c76);
+        background: -webkit-linear-gradient(left, #242121, #5a5c5d);
       }
 
       .col-md-4 {
@@ -224,8 +240,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
       .list-group-item.active {
         z-index: 2;
         color: #fff;
-        background-color: #342ac1;
-        border-color: #007bff;
+        background-color: #1e9cd6;
+        border-color: #00ffdb;
       }
 
       .text-primary {
@@ -243,6 +259,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
       .btn-primary {
         background-color: #3c50c1;
         border-color: #3c50c1;
+      }
+
+      .navbar-brand {
+        font-size: 1.4rem;
+        position: relative;
+        left: 15px;
+      }
+
+      .nav-link {
+        position: relative;
+        left: 40px;
+        top: 3px;
+      }
+
+      .card{
+        width: 110%;
+      }
+
+      .card-body {
+        background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
+      }
+
+      .table {
+        width: 900px;
+        color: #0c3e6f;
+      }
+
+      .list-group {
+        line-height: 2.1;
       }
     </style>
 
@@ -270,7 +315,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
 
 <body style="padding-top:50px;">
   <div class="container-fluid" style="margin-top:50px;">
-    <h3 style="margin-left: 40%; padding-bottom: 20px;font-family: 'IBM Plex Sans', sans-serif;"> WELCOME RECEPTIONIST </h3>
+    <h2 style="margin-left: 40%; padding-bottom:0px;font-family: 'IBM Plex Sans', sans-serif;"> WELCOME RECEPTIONIST </h2>
     <div class="row">
       <div class="col-md-4" style="max-width:25%;margin-top: 3%;">
         <div class="list-group" id="list-tab" role="tablist">
@@ -287,102 +332,116 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
         </div><br>
       </div>
 
-      <div class="col-md-8" style="margin-top: 3%;">
+      <div class="col-md-9" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
           <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
-            <div class="container-fluid container-fullw bg-white">
-              <div class="row">
-                <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Doctor List</h4>
+            <div class="container-fluid container-fullw bg-black">
 
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script>
+              <div>
+                <div class="counters">
+                  <h3>
+                    <div class="counter" id="doctorCounter">0</div>Doctors<br><br>
+                  </h3>
 
-                      <p class="links cl-effect-1">
-                        <a href="#list-doc" onclick="clickDiv('#list-doc-list')">
-                          View Doctors
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-4" style="left: -3%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Patient List</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-pat-list')">
-                          View Patients
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Appointment Details</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-app-list')">
-                          View Appointments
-                        </a>
-                      </p>
-                    </div>
-                  </div>
+                  <h3>
+                    <div class="counter" id="patientCounter">0</div>Patients
+                  </h3>
                 </div>
               </div>
 
-
-
-              <div class="row">
-                <div class="col-sm-4" style="left: 13%;margin-top: 5%;">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Prescription List</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          View Prescriptions
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div class="col-sm-4" style="left: 18%;margin-top: 5%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-plus fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Manage Accounts</h4>
-
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-adoc-list')">Add Doctors</a>
-                        &nbsp|
-                        <a href="#app-hist" onclick="clickDiv('#list-ddoc-list')">
-                          Delete
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div class="welcome">
+                <img src="../assets/images/welcome.jpg" class="welcome-img" alt="Welcome Image">
               </div>
+
             </div>
           </div>
+
+          <style>
+            .counters {
+              margin-top: 20px;
+            }
+
+            .counter {
+              display: inline-block;
+              color: black;
+              font-size: 28px;
+              margin: 0 20px;
+            }
+
+            .welcome-img {
+              position: absolute;
+              top: -40px;
+              width: 1190px; 
+              max-width: 200%;
+              height: auto;
+              display: block;
+              margin: 0 auto;
+              opacity: 80%;
+              z-index: -1;
+            }
+
+            body {
+              background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
+            }
+
+            .bg-primary{
+              background: -webkit-linear-gradient(left, #242121, #89665082);
+            }
+          </style>
+
+          <!-- Script for The Count in Dashboard -->
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              const doctorCounter = document.getElementById("doctorCounter");
+              const patientCounter = document.getElementById("patientCounter");
+
+              // Function to update counters with transition effect
+              function updateCounters(doctors, patients) {
+                let currentDoctors = parseInt(doctorCounter.textContent);
+                let currentPatients = parseInt(patientCounter.textContent);
+
+                // Calculate increment step
+                let doctorStep = Math.ceil((doctors - currentDoctors) / 100);
+                let patientStep = Math.ceil((patients - currentPatients) / 100);
+
+                // Update counters with transition effect
+                let doctorInterval = setInterval(function() {
+                  currentDoctors += doctorStep;
+                  doctorCounter.textContent = currentDoctors;
+
+                  if (currentDoctors >= doctors) {
+                    clearInterval(doctorInterval);
+                  }
+                }, 90);
+
+                let patientInterval = setInterval(function() {
+                  currentPatients += patientStep;
+                  patientCounter.textContent = currentPatients;
+
+                  if (currentPatients >= patients) {
+                    clearInterval(patientInterval);
+                  }
+                }, 90);
+              }
+              <?php
+              $conn = mysqli_connect("localhost", "root", "", "prms_db");
+              if (!$conn) {
+                die("Connection failed: " . mysqli_connect_error());
+              }
+              $doctorCountQuery = "SELECT COUNT(*) AS doctor_count FROM doctb";
+              $doctorResult = mysqli_query($conn, $doctorCountQuery);
+              $doctorCount = mysqli_fetch_assoc($doctorResult)['doctor_count'];
+
+              $patientCountQuery = "SELECT COUNT(*) AS patient_count FROM patreg";
+              $patientResult = mysqli_query($conn, $patientCountQuery);
+              $patientCount = mysqli_fetch_assoc($patientResult)['patient_count'];
+
+              echo "updateCounters($doctorCount, $patientCount);";
+
+              mysqli_close($conn);
+              ?>
+            });
+          </script>
 
           <div class="tab-pane fade" id="list-doc" role="tabpanel" aria-labelledby="list-home-list">
 
@@ -508,7 +567,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                     <?php
                     $con = mysqli_connect("localhost", "root", "", "prms_db");
                     global $con;
-                    $query = "select * from prestb";
+                    $query = "select * from prestb ORDER BY apptime DESC LIMIT 5";
                     $result = mysqli_query($con, $query);
                     while ($row = mysqli_fetch_array($result)) {
                       $doctor = $row['doctor'];
@@ -565,11 +624,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                   <th scope="col">Gender</th>
                   <th scope="col">Contact</th>
                   <th scope="col">Doctor Name</th>
-                  <th scope="col">Consultancy Fees</th>
                   <th scope="col">Appointment Date</th>
                   <th scope="col">Appointment Time</th>
-                  <th scope="col">Appointment Status</th>
                   <th scope="col">Approve Appointment</th>
+                  <th scope="col">Cancel</th>
                 </tr>
               </thead>
               <tbody>
@@ -578,7 +636,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
 
-                $query = "select * from appointmenttb;";
+                $query = "select * from appointmenttb where approve_status=0 AND receptStatus=1 ORDER BY appdate DESC;";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -590,22 +648,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                     <td><?php echo $row['gender']; ?></td>
                     <td><?php echo $row['contact']; ?></td>
                     <td><?php echo $row['doctor']; ?></td>
-                    <td><?php echo $row['docFees']; ?></td>
                     <td><?php echo $row['appdate']; ?></td>
                     <td><?php echo $row['apptime']; ?></td>
-                    <td>
-                      <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) {
-                        echo "Active";
-                      }
-                      if (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1)) {
-                        echo "Cancelled by Patient";
-                      }
-                      if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
-                        echo "Cancelled by Doctor";
-                      }
-                      ?>
-                    </td>
-
                     <td>
                       <!-- Approve button -->
                       <?php if ($row['approve_status'] == 0) { ?>
@@ -615,6 +659,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                         <button class="btn btn-secondary" disabled>Approved</button>
                       <?php } ?>
                     </td>
+                    <td>
+                      <!-- Cancel button -->
+                      <?php if ($row['receptStatus'] == 1) { ?>
+                        <button id="cancelBtn_<?php echo $row['ID']; ?>" class="btn btn-danger" onclick="cancelAppointment('<?php echo $row['ID']; ?>')">Cancel</button>
+                      <?php } else { ?>
+                        <!-- Display "Cancelled" if appointment is already cancelled -->
+                        <button class="btn btn-secondary" disabled>Cancelled</button>
+                      <?php } ?>
+                    </td>
                   </tr>
                 <?php } ?>
               </tbody>
@@ -622,12 +675,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
             <br>
           </div>
 
-          <!-- Script to change the Buttons from Aprrove to Approved -->
           <script>
             // Function to handle approve button click
             function approveAppointment(appointmentID) {
-              // Disable the button to prevent multiple clicks
-              document.getElementById('approveBtn_' + appointmentID).disabled = true;
+              // Disable the approve button to prevent multiple clicks
+              var approveButton = document.getElementById('approveBtn_' + appointmentID);
+              approveButton.disabled = true;
+
+              // Disable the cancel button to prevent further actions
+              var cancelButton = document.getElementById('cancelBtn_' + appointmentID);
+              cancelButton.disabled = true;
 
               // Send an AJAX request to update the database
               var xhr = new XMLHttpRequest();
@@ -636,14 +693,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
               xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                   // Update button appearance and status on success
-                  document.getElementById('approveBtn_' + appointmentID).innerText = 'Approved';
-                  document.getElementById('approveBtn_' + appointmentID).classList.remove('btn-success');
-                  document.getElementById('approveBtn_' + appointmentID).classList.add('btn-secondary');
+                  approveButton.innerText = 'Approved';
+                  approveButton.classList.remove('btn-success');
+                  approveButton.classList.add('btn-secondary');
                 }
               };
               xhr.send("appointmentID=" + appointmentID);
             }
+
+            // Function to handle cancel button click
+            function cancelAppointment(appointmentID) {
+              // Disable the cancel button to prevent multiple clicks
+              var cancelButton = document.getElementById('cancelBtn_' + appointmentID);
+              cancelButton.disabled = true;
+
+              // Disable the approve button to prevent further actions
+              var approveButton = document.getElementById('approveBtn_' + appointmentID);
+              approveButton.disabled = true;
+
+              // Send an AJAX request to update the database
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", "admin-panel1.php", true);
+              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+              xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                  // Update button appearance and status on success
+                  cancelButton.innerText = 'Cancelled';
+                  cancelButton.classList.remove('btn-danger');
+                  cancelButton.classList.add('btn-secondary');
+                }
+              };
+              xhr.send("cancelAppointmentID=" + appointmentID);
+            }
           </script>
+
+          </script>
+
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
 
@@ -714,8 +799,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                       </div><br><br>
 
                       <div class="col-md-4">
-                        <input type="button" id="findButton" value="Find me this man" class="btn btn-info">
-                      </div>>
+                        <input type="button" id="findButton" value="Search" class="btn btn-info" name="searchAppointment">
+                      </div>
 
                       <div class="col-md-4">
                         <label for="patientID">Patient ID</label>
@@ -832,7 +917,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
 
-                $query = "select * from contact;";
+                $query = "select * from contact ORDER BY cid DESC LIMIT 10;";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -853,7 +938,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
   </div>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
