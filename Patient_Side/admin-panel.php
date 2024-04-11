@@ -58,22 +58,6 @@ function get_specs()
 
 ?>
 
-<?php
-$con = mysqli_connect("localhost", "root", "", "prms_db");
-$userID = $_SESSION['pid'];
-$query = "SELECT * FROM paterg WHERE pid = '$userID'";
-$result = mysqli_query($con, $query);
-
-if ($result && mysqli_num_rows($result) > 0) {
-  $row = mysqli_fetch_assoc($result);
-  $userDetails = $row;
-  $userPhoto = $row['picture'];
-} else {
-  $userDetails = array(); 
-  $userPhoto = null;
-}
-mysqli_close($con);
-?>
 
 <html lang="en">
 <title>Patient-Dashboard</title>
@@ -93,12 +77,25 @@ mysqli_close($con);
 
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> PRMS</a>
+    <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> <b>Patient Record Management System</b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <style>
+      .welcome-img {
+        position: absolute;
+        right: -10px;
+        top: -60px;
+        width: 1200px;
+        max-width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        opacity: 70%;
+        z-index: -1;
+      }
+
       .bg-primary {
         background: -webkit-linear-gradient(left, #242121, #89665082);
       }
@@ -124,12 +121,12 @@ mysqli_close($con);
       }
 
       .list-group {
-        display: -ms-flexbox;
         display: flex;
         -ms-flex-direction: column;
         flex-direction: column;
         padding-left: 0;
         margin-bottom: 0;
+        line-height: 2.6;
       }
 
       .col-md-4 {
@@ -138,6 +135,15 @@ mysqli_close($con);
 
       .card-body {
         background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
+        width: 100%;
+      }
+
+      .form-control {
+        width: 90%;
+      }
+
+      .navbar-dark .navbar-brand {
+        font-size: 24px;
       }
     </style>
 
@@ -179,45 +185,91 @@ mysqli_close($con);
 
         </div><br>
       </div>
-      <div class="col-md-8" style="margin-top: 3%;">
-        <div class="tab-content" id="nav-tabContent" style="width: 950px;">
+      <div class="col-md-9" style="margin-top: 3%;">
+        <div class="tab-content" id="nav-tabContent" style="width: 90%;">
           <style>
             body {
               background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
             }
           </style>
 
-          <div class="tab-pane fade  show active" id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
+          <!-- Dashboard Content -->
+          <div class="tab-pane fade  " id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
             <div class="container-fluid container-fullw bg-white">
-              <div class="image">
-
+              <div class="welcome">
+                <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
               </div>
+
 
             </div>
           </div>
-          <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-            <div class="container-fluid container-fullw bg-white">
-              <div class="row" style="padding: 20px; border:1px solid black">
-                <div class="col-md-3">
-                  <!-- User Image -->
-                  <?php if ($userPhoto) : ?>
-                    <img src="<?php echo $userPhoto; ?>" alt="User Photo">
-                  <?php else : ?>
-                    <img src="default_user_photo.jpg" alt="Default User Photo">
-                  <?php endif; ?>
+
+          <!-- Your Profile Content. Currently Active -->
+          <?php
+          $con = mysqli_connect("localhost", "root", "", "prms_db");
+          if (!$con) {
+            die("Connection failed: " . mysqli_connect_error());
+          }
+
+          $userID = $_SESSION['pid'];
+          $query = "SELECT * FROM patreg WHERE pid = $userID";
+          $result = mysqli_query($con, $query);
+
+          if (mysqli_num_rows($result) > 0) {
+            $userData = mysqli_fetch_assoc($result);
+            $firstName = $userData['fname'];
+            $lastName = $userData['lname'];
+            $gender = $userData['gender'];
+            $email = $userData['email'];
+            $contact = $userData['contact'];
+            $picture = !empty($userData['picture']) ? $userData['picture'] : '../assets/images/default-user.png';
+          ?>
+            <div class="tab-pane fade show active" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+              <div class="container-fluid container-fullw bg-white">
+                <div class="row" style="padding: 20px; text-align:center; background: -webkit-linear-gradient(left, #b8d9ff, #c4b2b2);">
+                  <h2>Your Profile:</h2>
                 </div>
-                <div class="col-md-9">
-                  <!-- User Details -->
-                  <h2><?php echo $userDetails['fullname']; ?></h2>
-                  <p>Email: <?php echo $userDetails['email']; ?></p>
-                  <!-- Add more user details as needed -->
-                </div>
-              </div>
-              <div class="row">
-                <!-- Additional Details -->
+                <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
+                  <div class="col-md-3" style="padding: 10px;">
+                    <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
+                    <button class="btn btn-info">Upload Photo</button>
+                  </div>
+                  <div class="col">
+                    <div class="row" style="padding: 10px;">
+                      <div class="col-5" style="padding-top: 40px;">
+                        <h4>General Information:</h4>
+                      </div>
+                      <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
+                        <ul>
+                          <li>First Name: <?php echo $firstName; ?></li>
+                          <li>Last Name: <?php echo $lastName; ?></li>
+                          <li>Gender: <?php echo $gender; ?></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="row" style="padding: 19px;">
+                      <div class="col-5" style="padding-top: 40px;">
+                        <h4>Additional Information:</h4>
+                      </div>
+                      <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
+                        <ul>
+                          <li>ID: <?php echo $userID; ?></li>
+                          <li>Email: <?php echo $email; ?></li>
+                          <li>Contact: <?php echo $contact; ?></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>               
               </div>
             </div>
-          </div>
+          <?php
+          } else {
+            echo "Failed to Load User Information!.";
+          }
+
+          mysqli_close($con);
+          ?>
 
 
           <div class="tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
