@@ -58,6 +58,46 @@ function get_specs()
 
 ?>
 
+<!-- Insert Image into the database -->
+<?php
+if (isset($_POST['upload'])) {
+  $userID = $_SESSION['pid'];
+
+  // Check if file is selected
+  if ($_FILES['photo']['name'] != '') {
+    $file_name = $_FILES['photo']['name'];
+    $file_size = $_FILES['photo']['size'];
+    $file_tmp = $_FILES['photo']['tmp_name'];
+    $file_type = $_FILES['photo']['type'];
+
+    // Specify the directory where the file will be stored
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($file_name);
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+      echo "<script>alert('This Photo Already Exists! '); window.location.href = 'admin-panel.php';</script>";
+    } else {
+      // Move the uploaded file to the specified directory
+      move_uploaded_file($file_tmp, $target_file);
+
+      // Update the user's photo path in the database
+      $con = mysqli_connect("localhost", "root", "", "prms_db");
+      $query = "UPDATE patreg SET picture='$target_file' WHERE pid=$userID";
+      mysqli_query($con, $query);
+
+      // Close the database connection
+      mysqli_close($con);
+
+      echo "<script>alert('Photo Uploaded Successfully!'); window.location.href = 'admin-panel.php';</script>";
+    }
+  } else {
+    echo "<script>alert('Please Choose a Photo! '); window.location.href = 'admin-panel.php';</script>";
+  }
+}
+?>
+
+
 
 <html lang="en">
 <title>Patient-Dashboard</title>
@@ -194,7 +234,7 @@ function get_specs()
           </style>
 
           <!-- Dashboard Content -->
-          <div class="tab-pane fade  " id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
+          <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
             <div class="container-fluid container-fullw bg-white">
               <div class="welcome">
                 <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
@@ -204,7 +244,7 @@ function get_specs()
             </div>
           </div>
 
-          <!-- Your Profile Content. Currently Active -->
+          <!-- Your Profile Content-->
           <?php
           $con = mysqli_connect("localhost", "root", "", "prms_db");
           if (!$con) {
@@ -224,7 +264,7 @@ function get_specs()
             $contact = $userData['contact'];
             $picture = !empty($userData['picture']) ? $userData['picture'] : '../assets/images/default-user.png';
           ?>
-            <div class="tab-pane fade show active" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+            <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
               <div class="container-fluid container-fullw bg-white">
                 <div class="row" style="padding: 20px; text-align:center; background: -webkit-linear-gradient(left, #b8d9ff, #c4b2b2);">
                   <h2>Your Profile:</h2>
@@ -232,7 +272,13 @@ function get_specs()
                 <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
                   <div class="col-md-3" style="padding: 10px;">
                     <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
-                    <button class="btn btn-info">Upload Photo</button>
+                    <form method="post" action="admin-panel.php" enctype="multipart/form-data">
+                      <div class="form-group">
+                        <input type="file" class="form-control-file" id="photo" name="photo">
+                      </div>
+                      <button type="submit" class="btn btn-info" name="upload">Upload</button>
+                    </form>
+
                   </div>
                   <div class="col">
                     <div class="row" style="padding: 10px;">
@@ -260,7 +306,7 @@ function get_specs()
                       </div>
                     </div>
                   </div>
-                </div>               
+                </div>
               </div>
             </div>
           <?php
