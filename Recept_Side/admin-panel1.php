@@ -273,6 +273,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
         top: 3px;
       }
 
+      .card{
+        width: 110%;
+      }
+
       .card-body {
         background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
       }
@@ -795,8 +799,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                       </div><br><br>
 
                       <div class="col-md-4">
-                        <input type="button" id="findButton" value="Find me this man" class="btn btn-info">
-                      </div>>
+                        <input type="button" id="findButton" value="Search" class="btn btn-info" name="searchAppointment">
+                      </div>
 
                       <div class="col-md-4">
                         <label for="patientID">Patient ID</label>

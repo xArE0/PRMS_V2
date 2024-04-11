@@ -123,6 +123,7 @@ INSERT INTO prms_db.contact (name, email, contact, message) VALUES
 ('Jane', 'jane@gmail.com', '7869869757', 'I love your service!');
 
 INSERT INTO prms_db.doctb (username, password, email, spec, docFees) VALUES
+('Anukul', 'anukul123', 'anukul@gmail.com', 'General', 1500),
 ('ashok', 'ashok123', 'ashok@gmail.com', 'General', 500),
 ('arun', 'arun123', 'arun@gmail.com', 'Cardiologist', 600),
 ('Dinesh', 'dinesh123', 'dinesh@gmail.com', 'General', 700),
@@ -133,6 +134,7 @@ INSERT INTO prms_db.doctb (username, password, email, spec, docFees) VALUES
 ('Aayush', 'aayush123', 'aayush@gmail.com', 'Pediatrician', 450);
 
 INSERT INTO prms_db.patreg (fname, lname, gender, email, contact, password, cpassword) VALUES
+('Aayush', 'Shrestha', 'Male', 'aayush@gmail.com', '9840031521', 'aayush123', 'aayush123'),
 ('Ram', 'Kumar', 'Male', 'ram@gmail.com', '9876543210', 'ram123', 'ram123'),
 ('Alia', 'Bhatt', 'Female', 'alia@gmail.com', '8976897689', 'alia123', 'alia123'),
 ('Shahrukh', 'khan', 'Male', 'shahrukh@gmail.com', '8976898463', 'shahrukh123', 'shahrukh123'),

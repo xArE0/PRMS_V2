@@ -127,7 +127,7 @@ if (isset($_POST['upload'])) {
   #inputbtn:hover {
     cursor: pointer;
   }
-
+  
   .welcome-img {
     position: absolute;
     right: -10px;
@@ -381,7 +381,7 @@ if (isset($_POST['upload'])) {
               </thead>
               <tbody>
                 <?php
-                $query = "SELECT pid, fname, lname, ID, appdate, apptime, disease, allergy, prescription FROM prestb WHERE doctor = '$doctor'";
+                $query = "SELECT * FROM prestb WHERE doctor = '$doctor'";
                 $result = mysqli_query($con, $query);
 
                 if ($result) {
