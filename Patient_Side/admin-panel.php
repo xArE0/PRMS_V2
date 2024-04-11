@@ -57,6 +57,24 @@ function get_specs()
 }
 
 ?>
+
+<?php
+$con = mysqli_connect("localhost", "root", "", "prms_db");
+$userID = $_SESSION['pid'];
+$query = "SELECT * FROM paterg WHERE pid = '$userID'";
+$result = mysqli_query($con, $query);
+
+if ($result && mysqli_num_rows($result) > 0) {
+  $row = mysqli_fetch_assoc($result);
+  $userDetails = $row;
+  $userPhoto = $row['picture'];
+} else {
+  $userDetails = array(); 
+  $userPhoto = null;
+}
+mysqli_close($con);
+?>
+
 <html lang="en">
 <title>Patient-Dashboard</title>
 
@@ -82,14 +100,14 @@ function get_specs()
 
     <style>
       .bg-primary {
-        background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+        background: -webkit-linear-gradient(left, #242121, #89665082);
       }
 
       .list-group-item.active {
         z-index: 2;
         color: #fff;
-        background-color: #342ac1;
-        border-color: #007bff;
+        background-color: #1e9cd6;
+        border-color: #00ffdb;
       }
 
       .text-primary {
@@ -99,6 +117,27 @@ function get_specs()
       .btn-primary {
         background-color: #3c50c1;
         border-color: #3c50c1;
+      }
+
+      .list-group {
+        line-height: 2.1;
+      }
+
+      .list-group {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+      }
+
+      .col-md-4 {
+        max-width: 20% !important;
+      }
+
+      .card-body {
+        background: -webkit-linear-gradient(left, #D5E9E8, #94a6ad);
       }
     </style>
 
@@ -133,6 +172,7 @@ function get_specs()
       <div class="col-md-4" style="max-width:25%; margin-top: 3%">
         <div class="list-group" id="list-tab" role="tablist">
           <a class="list-group-item list-group-item-action active" id="list-dash-list" data-toggle="list" href="#list-dash" role="tab" aria-controls="home">Dashboard</a>
+          <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your Profile</a>
           <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Book Appointment</a>
           <a class="list-group-item list-group-item-action" href="#app-hist" id="list-pat-list" role="tab" data-toggle="list" aria-controls="home">Appointment History</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescriptions</a>
@@ -141,62 +181,44 @@ function get_specs()
       </div>
       <div class="col-md-8" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
+          <style>
+            body {
+              background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
+            }
+          </style>
 
-
-          <div class="tab-pane fade  show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
+          <div class="tab-pane fade  show active" id="list-dash" role="tabpanel" aria-labelledby="list-profile-list">
             <div class="container-fluid container-fullw bg-white">
-              <div class="row">
-                <div class="col-sm-4" style="left: 5%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-terminal fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;"> Book My Appointment</h4>
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script>
-                      <p class="links cl-effect-1">
-                        <a href="#list-home" onclick="clickDiv('#list-home-list')">
-                          Book Appointment
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div class="image">
 
-                <div class="col-sm-4" style="left: 10%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">My Appointments</h2>
-
-                        <p class="cl-effect-1">
-                          <a href="#app-hist" onclick="clickDiv('#list-pat-list')">
-                            View Appointment History
-                          </a>
-                        </p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              <div class="col-sm-4" style="left: 20%;margin-top:5%">
-                <div class="panel panel-white no-radius text-center">
-                  <div class="panel-body">
-                    <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                    <h4 class="StepTitle" style="margin-top: 5%;">Prescriptions</h2>
-
-                      <p class="cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          View Prescription List
-                        </a>
-                      </p>
-                  </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+            <div class="container-fluid container-fullw bg-white">
+              <div class="row" style="padding: 20px; border:1px solid black">
+                <div class="col-md-3">
+                  <!-- User Image -->
+                  <?php if ($userPhoto) : ?>
+                    <img src="<?php echo $userPhoto; ?>" alt="User Photo">
+                  <?php else : ?>
+                    <img src="default_user_photo.jpg" alt="Default User Photo">
+                  <?php endif; ?>
                 </div>
+                <div class="col-md-9">
+                  <!-- User Details -->
+                  <h2><?php echo $userDetails['fullname']; ?></h2>
+                  <p>Email: <?php echo $userDetails['email']; ?></p>
+                  <!-- Add more user details as needed -->
+                </div>
+              </div>
+              <div class="row">
+                <!-- Additional Details -->
               </div>
             </div>
           </div>
+
 
           <div class="tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
             <div class="container-fluid">
@@ -390,7 +412,7 @@ function get_specs()
                     <td><?php echo $row['allergy']; ?></td>
                     <td><?php echo $row['prescription']; ?></td>
                     <td>
-                      <form method="get">                    
+                      <form method="get">
                         <a href="admin-panel.php?ID=<?php echo $row['ID'] ?>">
                           <input type="hidden" name="ID" value="<?php echo $row['ID'] ?>" />
                           <input type="submit" onclick="alert('Bill Paid Successfully');" name="generate_bill" class="btn btn-success" value="Pay Bill" />
