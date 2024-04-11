@@ -52,6 +52,7 @@ CREATE TABLE prms_db.doctb (
   email VARCHAR(50) NOT NULL,
   spec VARCHAR(50) NOT NULL,
   docFees INT(10) NOT NULL,
+  picture LONGBLOB DEFAULT NULL,
   working_status INT NOT NULL DEFAULT 1
 );
 
@@ -79,6 +80,10 @@ CREATE TABLE prms_db.prestb (
   disease VARCHAR(250) NOT NULL,
   allergy VARCHAR(250) NOT NULL,
   prescription VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE prms_db.record(
+  
 );
 
 -- Inserting Values in the Database

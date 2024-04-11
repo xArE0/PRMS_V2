@@ -239,8 +239,6 @@ if (isset($_POST['upload'])) {
               <div class="welcome">
                 <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
               </div>
-
-
             </div>
           </div>
 
