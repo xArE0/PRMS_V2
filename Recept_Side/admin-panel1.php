@@ -150,6 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
 }
 ?>
 
+
 <!-- Code to Approve Mechanism in Appointment Details Section of Sidebar -->
 <?php
 // Establish database connection
@@ -273,7 +274,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
         top: 3px;
       }
 
-      .card{
+      .card {
         width: 110%;
       }
 
@@ -371,7 +372,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             .welcome-img {
               position: absolute;
               top: -40px;
-              width: 1190px; 
+              width: 1190px;
               max-width: 200%;
               height: auto;
               display: block;
@@ -384,7 +385,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
               background: -webkit-linear-gradient(left, #e7fffe, #9a9a9a);
             }
 
-            .bg-primary{
+            .bg-primary {
               background: -webkit-linear-gradient(left, #242121, #89665082);
             }
           </style>
@@ -456,6 +457,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             <table class="table table-hover">
               <thead>
                 <tr>
+                  <th scope="col">Doctor ID</th>
                   <th scope="col">Doctor Name</th>
                   <th scope="col">Specialization</th>
                   <th scope="col">Email</th>
@@ -470,6 +472,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                 $query = "select * from prms_db.doctb where working_status=1";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
+                  $did = $row['docid'];
                   $username = $row['username'];
                   $spec = $row['spec'];
                   $email = $row['email'];
@@ -477,6 +480,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                   $docFees = $row['docFees'];
 
                   echo "<tr>
+                        <td>$did</td>
                         <td>$username</td>
                         <td>$spec</td>
                         <td>$email</td>
@@ -789,7 +793,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                   <center>
                     <h4>Manage appointments</h4>
                   </center><br>
-                  <form class="form-group" method="post" action="admin-panel1.php">
+                  <form class="form-group" method="post" action="admin-panel1.php" id="appointmentForm">
                     <div class="row">
                       <div class="col-md-4">
                         <label for="appointmentID">Appointment ID</label>
@@ -799,7 +803,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                       </div><br><br>
 
                       <div class="col-md-4">
-                        <input type="button" id="findButton" value="Search" class="btn btn-info" name="searchAppointment">
+                        <input type="button" id="findButton" value="Search Here" class="btn btn-info" name="searchAppointment" disabled>
                       </div>
 
                       <div class="col-md-4">
@@ -891,6 +895,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             </div>
           </div>
 
+          <!-- Script to autofill the contents.-->
+          <script>
+            document.getElementById('appointmentID').addEventListener('input', function() {
+              var appointmentID = this.value;
+
+              // Make AJAX request to fetch appointment data
+              $.ajax({
+                url: 'search_appointment.php', // URL of the server-side script
+                type: 'POST',
+                data: {
+                  appointmentID: appointmentID
+                },
+                dataType: 'json',
+                success: function(response) {
+                  document.getElementById('patientID').value = response.pid;
+                  document.getElementById('spec').value = response.spec;
+                  document.getElementById('doctor').value = response.doctor;
+                  document.getElementById('docFees').value = response.docFees;
+                  document.getElementById('appdate').value = response.appdate;
+                  document.getElementById('apptime').value = response.apptime;
+                },
+                error: function(xhr, status, error) {
+                  console.error('Error fetching appointment data:', error);
+                }
+              });
+            });
+          </script>
+
           <div class="tab-pane fade" id="list-attend" role="tabpanel" aria-labelledby="list-attend-list">...</div>
           <div class="tab-pane fade" id="list-mes" role="tabpanel" aria-labelledby="list-mes-list">
 
@@ -938,7 +970,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
   </div>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>

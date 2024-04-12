@@ -269,14 +269,15 @@ if (isset($_POST['upload'])) {
                 </div>
                 <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
                   <div class="col-md-3" style="padding: 10px;">
-                    <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
+                    <div style="width: 200px; height: 200px; overflow: hidden; border: 1px solid #ccc;">
+                      <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
                     <form method="post" action="admin-panel.php" enctype="multipart/form-data">
                       <div class="form-group">
                         <input type="file" class="form-control-file" id="photo" name="photo">
                       </div>
                       <button type="submit" class="btn btn-info" name="upload">Upload</button>
                     </form>
-
                   </div>
                   <div class="col">
                     <div class="row" style="padding: 10px;">
@@ -314,6 +315,7 @@ if (isset($_POST['upload'])) {
 
           mysqli_close($con);
           ?>
+
 
 
           <div class="tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">

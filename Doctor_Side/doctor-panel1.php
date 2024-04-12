@@ -127,7 +127,7 @@ if (isset($_POST['upload'])) {
   #inputbtn:hover {
     cursor: pointer;
   }
-  
+
   .welcome-img {
     position: absolute;
     right: -10px;
@@ -242,14 +242,15 @@ if (isset($_POST['upload'])) {
                   </div>
                   <div class="row" style="padding: 10px;  background: -webkit-linear-gradient(left, #a3aad9, #b7b0b6);">
                     <div class="col-md-3" style="padding: 10px;">
-                      <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; border: 1px solid #ccc;">
+                      <div style="width: 200px; height: 200px; overflow: hidden; border: 1px solid #ccc;">
+                        <img src="<?php echo $picture; ?>" alt="User Photo" style="width: 100%; height: auto;">
+                      </div>
                       <form method="post" action="doctor-panel1.php" enctype="multipart/form-data">
                         <div class="form-group">
                           <input type="file" class="form-control-file" id="photo" name="photo">
                         </div>
                         <button type="submit" class="btn btn-info" name="upload">Upload</button>
                       </form>
-
                     </div>
                     <div class="col">
                       <div class="row" style="padding: 10px;">
@@ -269,7 +270,6 @@ if (isset($_POST['upload'])) {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           <?php
@@ -279,6 +279,7 @@ if (isset($_POST['upload'])) {
 
           mysqli_close($con);
           ?>
+
 
 
           <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-home-list">

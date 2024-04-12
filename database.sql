@@ -146,3 +146,5 @@ INSERT INTO prms_db.patreg (fname, lname, gender, email, contact, password, cpas
 ('Dipesh', 'Blake', 'Male', 'dipesh@gmail.com', '8683619153', 'Dipesh123', 'Dipesh123'),
 ('Peter', 'Norvig', 'Male', 'peter@gmail.com', '9609362815', 'peter123', 'peter123'),
 ('Shraddha', 'Kapoor', 'Female', 'shraddha@gmail.com', '9768946252', 'shraddha123', 'shraddha123');
+
+
