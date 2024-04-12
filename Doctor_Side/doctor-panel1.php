@@ -3,7 +3,7 @@
 include('../func1.php');
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 $doctor = $_SESSION['docid'];
-$docname=$_SESSION['dname'];
+$docname = $_SESSION['dname'];
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set doctorStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
@@ -313,7 +313,7 @@ if (isset($_POST['upload'])) {
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
-                  <tr>
+                  <tr onclick="displayPatientDetails(<?php echo $row['pid']; ?>)">
                     <td><?php echo $row['pid']; ?></td>
                     <td><?php echo $row['ID']; ?></td>
                     <td><?php echo $row['fname']; ?></td>
@@ -484,7 +484,7 @@ if (isset($_POST['upload'])) {
   <!-- Testing the user detail popup thing -->
   <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-      <div class="modal-content">
+      <div class="modal-content" style="background: linear-gradient(to right, #b4b4b4, #c5f6f6);">
         <div class="modal-header">
           <h4 class="modal-title" id="patientDetailsModalLabel">Patient Details</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -493,7 +493,7 @@ if (isset($_POST['upload'])) {
         </div>
         <div class="modal-body">
           <div id="patientDetails">
-
+            <!-- Content goes here -->
           </div>
         </div>
       </div>
