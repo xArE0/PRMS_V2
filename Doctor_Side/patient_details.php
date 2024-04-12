@@ -17,6 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
                 $photo_src = '../images/user2.png';
             }
 
+            // Calculate age based on date of birth
+            $dob = new DateTime($row_patient['dob']);
+            $today = new DateTime();
+            $age = $dob->diff($today)->y;
+
             $patient_details = '
                 <div class="container-fluid">
                     <div class="row">
@@ -29,6 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
                             <p><strong>Patient ID:</strong> ' . $row_patient['pid'] . '</p>
                             <p><strong>First Name:</strong> ' . $row_patient['fname'] . '</p>
                             <p><strong>Last Name:</strong> ' . $row_patient['lname'] . '</p>
+                            <p><strong>Date of Birth:</strong> ' . $row_patient['dob'] . '</p>
+                            <p><strong>Age:</strong> ' . $age . '</p>
                             <p><strong>Gender:</strong> ' . $row_patient['gender'] . '</p>
                             <p><strong>Email:</strong> ' . $row_patient['email'] . '</p>
                         </div>

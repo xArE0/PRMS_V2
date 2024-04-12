@@ -61,6 +61,7 @@ CREATE TABLE prms_db.patreg (
   fname VARCHAR(20) NOT NULL,
   lname VARCHAR(20) NOT NULL,
   gender VARCHAR(10) NOT NULL,
+  dob date NOT NULL,
   email VARCHAR(30) NOT NULL,
   contact VARCHAR(10) NOT NULL,
   password VARCHAR(30) NOT NULL,
@@ -133,18 +134,19 @@ INSERT INTO prms_db.doctb (username, password, email, spec, docFees) VALUES
 ('Abbis', 'abbis123', 'abbis@gmail.com', 'Neurologist', 1500),
 ('Aayush', 'aayush123', 'aayush@gmail.com', 'Pediatrician', 450);
 
-INSERT INTO prms_db.patreg (fname, lname, gender, email, contact, password, cpassword) VALUES
-('Aayush', 'Shrestha', 'Male', 'aayush@gmail.com', '9840031521', 'aayush123', 'aayush123'),
-('Ram', 'Kumar', 'Male', 'ram@gmail.com', '9876543210', 'ram123', 'ram123'),
-('Alia', 'Bhatt', 'Female', 'alia@gmail.com', '8976897689', 'alia123', 'alia123'),
-('Shahrukh', 'khan', 'Male', 'shahrukh@gmail.com', '8976898463', 'shahrukh123', 'shahrukh123'),
-('Kishan', 'Lal', 'Male', 'kishansmart0@gmail.com', '8838489464', 'kishan123', 'kishan123'),
-('Gautam', 'Shankararam', 'Male', 'gautam@gmail.com', '9070897653', 'gautam123', 'gautam123'),
-('Sushant', 'Singh', 'Male', 'sushant@gmail.com', '9059986865', 'sushant123', 'sushant123'),
-('Nancy', 'Dahal', 'Female', 'nancy@gmail.com', '9128972454', 'nancy123', 'nancy123'),
-('Kenny', 'Sebastian', 'Male', 'kenny@gmail.com', '9809879868', 'kenny123', 'kenny123'),
-('Dipesh', 'Blake', 'Male', 'dipesh@gmail.com', '8683619153', 'Dipesh123', 'Dipesh123'),
-('Peter', 'Norvig', 'Male', 'peter@gmail.com', '9609362815', 'peter123', 'peter123'),
-('Shraddha', 'Kapoor', 'Female', 'shraddha@gmail.com', '9768946252', 'shraddha123', 'shraddha123');
+INSERT INTO prms_db.patreg (fname, lname, gender, dob, email, contact, password, cpassword)
+VALUES
+('Aayush', 'Shrestha', 'Male', '2014-04-15', 'aayush@gmail.com', '9840031521', 'aayush123', 'aayush123'),
+('Ram', 'Kumar', 'Male', '1995-08-25', 'ram@gmail.com', '9876543210', 'ram123', 'ram123'),
+('Alia', 'Bhatt', 'Female', '1990-11-01', 'alia@gmail.com', '8976897689', 'alia123', 'alia123'),
+('Shahrukh', 'khan', 'Male', '1987-03-20', 'shahrukh@gmail.com', '8976898463', 'shahrukh123', 'shahrukh123'),
+('Kishan', 'Lal', 'Male', '1983-06-10', 'kishansmart0@gmail.com', '8838489464', 'kishan123', 'kishan123'),
+('Gautam', 'Shankararam', 'Male', '1978-09-05', 'gautam@gmail.com', '9070897653', 'gautam123', 'gautam123'),
+('Sushant', 'Singh', 'Male', '1985-12-15', 'sushant@gmail.com', '9059986865', 'sushant123', 'sushant123'),
+('Nancy', 'Dahal', 'Female', '1989-02-28', 'nancy@gmail.com', '9128972454', 'nancy123', 'nancy123'),
+('Kenny', 'Sebastian', 'Male', '1982-05-12', 'kenny@gmail.com', '9809879868', 'kenny123', 'kenny123'),
+('Dipesh', 'Blake', 'Male', '1980-07-03', 'dipesh@gmail.com', '8683619153', 'Dipesh123', 'Dipesh123'),
+('Peter', 'Norvig', 'Male', '1975-10-17', 'peter@gmail.com', '9609362815', 'peter123', 'peter123'),
+('Shraddha', 'Kapoor', 'Female', '1970-01-05', 'shraddha@gmail.com', '9768946252', 'shraddha123', 'shraddha123');
 
 

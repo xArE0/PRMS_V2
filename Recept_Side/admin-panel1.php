@@ -444,6 +444,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             });
           </script>
 
+          <!-- Doctor List section of the sidebar -->
           <div class="tab-pane fade" id="list-doc" role="tabpanel" aria-labelledby="list-home-list">
 
             <div class="col-md-8">
@@ -494,7 +495,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             <br>
           </div>
 
-
+          <!-- Patient List section of the Sidebar -->
           <div class="tab-pane fade" id="list-pat" role="tabpanel" aria-labelledby="list-pat-list">
             <div class="col-md-8">
               <form class="form-group" action="patientsearch.php" method="post">
@@ -531,17 +532,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                   $contact = $row['contact'];
                   $password = $row['password'];
 
-                  echo "<tr>
-                        <td>$pid</td>
-                        <td>$fname</td>
-                        <td>$lname</td>
-                        <td>$gender</td>
-                        <td>$email</td>
-                        <td>$contact</td>
-                        <td>$password</td>
-                      </tr>";
+                  echo "<tr onclick=\"displayPatientDetails($pid)\">
+                    <td>$pid</td>
+                    <td>$fname</td>
+                    <td>$lname</td>
+                    <td>$gender</td>
+                    <td>$email</td>
+                    <td>$contact</td>
+                    <td>$password</td>
+                  </tr>";
                 }
-
                 ?>
               </tbody>
             </table>
@@ -968,6 +968,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
       </div>
     </div>
   </div>
+
+  <!-- Testing the user detail popup thing -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="background: linear-gradient(to right, #b4b4b4, #c5f6f6);">
+        <div class="modal-header">
+          <h4 class="modal-title" id="patientDetailsModalLabel">Patient Details</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="patientDetails">
+            <!-- Content goes here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // JavaScript function to fetch and display patient details in the modal
+    function displayPatientDetails(patientID) {
+      console.log('Fetching patient details for ID:', patientID);
+      // AJAX request to fetch patient details from server
+      $.ajax({
+        url: 'patient_details.php',
+        method: 'POST',
+        data: {
+          patientID: patientID
+        },
+        success: function(response) {
+          // Display patient details in the modal
+          console.log('Response from server:', response);
+          $('#patientDetails').html(response);
+          $('#patientDetailsModal').modal('show'); // Show the modal
+          console.log('Modal shown');
+        },
+        error: function(xhr, status, error) {
+          // Handle error
+          console.error('Error:', xhr.responseText);
+        }
+      });
+    }
+  </script>
+
+
+
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
