@@ -71,7 +71,7 @@ if (isset($_POST['upload'])) {
     $file_type = $_FILES['photo']['type'];
 
     // Specify the directory where the file will be stored
-    $target_dir = "uploads/";
+    $target_dir = "../uploads/";
     $target_file = $target_dir . basename($file_name);
 
     // Check if file already exists

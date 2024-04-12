@@ -3,6 +3,7 @@
 include('../func1.php');
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 $doctor = $_SESSION['docid'];
+$docname=$_SESSION['dname'];
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set doctorStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
@@ -24,7 +25,7 @@ if (isset($_POST['upload'])) {
     $file_type = $_FILES['photo']['type'];
 
     // Specify the directory where the file will be stored
-    $target_dir = "uploads/";
+    $target_dir = "../uploads/";
     $target_file = $target_dir . basename($file_name);
 
     // Check if file already exists
@@ -202,12 +203,13 @@ if (isset($_POST['upload'])) {
           <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your Profile</a>
           <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list" role="tab" data-toggle="list" aria-controls="home">Appointments</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
-
         </div><br>
+
+        <!-- Dashboard Content -->
       </div>
       <div class="col-md-9" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
-          <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
+          <div class="tab-pane fade " id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
             <div class="container-fluid container-fullw bg-white">
               <div class="welcome">
                 <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
@@ -365,7 +367,8 @@ if (isset($_POST['upload'])) {
             <br>
           </div>
 
-          <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
+          <!-- Prescription List Section -->
+          <div class="tab-pane fade show active" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -382,7 +385,7 @@ if (isset($_POST['upload'])) {
               </thead>
               <tbody>
                 <?php
-                $query = "SELECT * FROM prestb WHERE doctor = '$doctor'";
+                $query = "SELECT * FROM prestb WHERE doctor = '$docname'";
                 $result = mysqli_query($con, $query);
 
                 if ($result) {
