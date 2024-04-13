@@ -10,7 +10,7 @@
             "port": 3306,
             "driver": "MySQL",
             "name": "SQL Connection",
-            "database": "mysql",
+            "database": "prms_db",
             "username": "root",
             "password": ""
         }

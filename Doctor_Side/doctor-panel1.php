@@ -283,10 +283,8 @@ if (isset($_POST['upload'])) {
           mysqli_close($con);
           ?>
 
-
-
-          <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-home-list">
-
+          <!-- Appointments Section of the Sidebar -->
+          <div class="tab-pane fade show active" id="list-app" role="tabpanel" aria-labelledby="list-home-list">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -295,14 +293,11 @@ if (isset($_POST['upload'])) {
                   <th scope="col">First Name</th>
                   <th scope="col">Last Name</th>
                   <th scope="col">Gender</th>
-                  <th scope="col">Email</th>
                   <th scope="col">Contact</th>
                   <th scope="col">Appointment Date</th>
                   <th scope="col">Appointment Time</th>
                   <th scope="col">Current Status</th>
                   <th scope="col">Action</th>
-                  <th scope="col">Prescribe</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -310,58 +305,46 @@ if (isset($_POST['upload'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
                 $dname = $_SESSION['dname'];
-                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname' AND approve_status=1";
+                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname' AND approve_status=1 AND userStatus=1 AND doctorStatus=1";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
-                  <tr onclick="displayPatientDetails(<?php echo $row['pid']; ?>)">
+                  <tr class="appointment-row" data-pid="<?php echo $row['pid']; ?>" data-id="<?php echo $row['ID']; ?>" data-fname="<?php echo $row['fname']; ?>" data-lname="<?php echo $row['lname']; ?>" data-gender="<?php echo $row['gender']; ?>" data-contact="<?php echo $row['contact']; ?>" data-appdate="<?php echo $row['appdate']; ?>" data-apptime="<?php echo $row['apptime']; ?>" data-status="<?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) {
+                                                                                                                                                                                                                                                                                                                                                                                                                  echo "Active";
+                                                                                                                                                                                                                                                                                                                                                                                                                } elseif (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1)) {
+                                                                                                                                                                                                                                                                                                                                                                                                                  echo "Cancelled by Patient";
+                                                                                                                                                                                                                                                                                                                                                                                                                } elseif (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
+                                                                                                                                                                                                                                                                                                                                                                                                                  echo "Cancelled by You";
+                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                ?>">
+
                     <td><?php echo $row['pid']; ?></td>
                     <td><?php echo $row['ID']; ?></td>
                     <td><?php echo $row['fname']; ?></td>
                     <td><?php echo $row['lname']; ?></td>
                     <td><?php echo $row['gender']; ?></td>
-                    <td><?php echo $row['email']; ?></td>
                     <td><?php echo $row['contact']; ?></td>
                     <td><?php echo $row['appdate']; ?></td>
                     <td><?php echo $row['apptime']; ?></td>
-                    <td>
-                      <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) {
-                        echo "Active";
-                      }
-                      if (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1)) {
-                        echo "Cancelled by Patient";
-                      }
-
-                      if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
-                        echo "Cancelled by You";
-                      }
-                      ?></td>
-
+                    <td><?php
+                        if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) {
+                          echo "Active";
+                        } elseif (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1)) {
+                          echo "Cancelled by Patient";
+                        } elseif (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
+                          echo "Cancelled by You";
+                        }
+                        ?></td>
                     <td>
                       <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) { ?>
-
-
-                        <a href="doctor-panel1.php?ID=<?php echo $row['ID'] ?>&cancel=update" onClick="return confirm('Are you sure you want to cancel this appointment ?')" title="Cancel Appointment" tooltip-placement="top" tooltip="Remove"><button class="btn btn-danger">Cancel</button></a>
+                        <a href="doctor-panel1.php?ID=<?php echo $row['ID']; ?>&cancel=update" onClick="return confirm('Are you sure you want to cancel this appointment ?')" title="Cancel Appointment" tooltip-placement="top" tooltip="Remove">
+                          <button class="btn btn-danger">Cancel</button>
+                        </a>
                       <?php } else {
-
                         echo "Cancelled";
                       } ?>
-
                     </td>
-
-                    <td>
-
-                      <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) { ?>
-
-                        <a href="prescribe.php?pid=<?php echo $row['pid'] ?>&ID=<?php echo $row['ID'] ?>&fname=<?php echo $row['fname'] ?>&lname=<?php echo $row['lname'] ?>&appdate=<?php echo $row['appdate'] ?>&apptime=<?php echo $row['apptime'] ?>" tooltip-placement="top" tooltip="Remove" title="prescribe">
-                          <button class="btn btn-success">Prescribe</button></a>
-                      <?php } else {
-
-                        echo "-";
-                      } ?>
-
-                    </td>
-                  </tr></a>
+                  </tr>
                 <?php } ?>
               </tbody>
             </table>
@@ -461,7 +444,7 @@ if (isset($_POST['upload'])) {
           </div>
 
           <!-- Regular Health Checkup side of sidebar -->
-          <div class="tab-pane fade show active" id="list-health-checkups" role="tabpanel" aria-labelledby="list-health-checkups-list">
+          <div class="tab-pane fade" id="list-health-checkups" role="tabpanel" aria-labelledby="list-health-checkups-list">
             <div class="container-fluid container-fullw bg-white">
               <div class="row">
                 <div class="col-md-6">
@@ -615,7 +598,90 @@ if (isset($_POST['upload'])) {
     }
   </script>
 
+  <!-- Modal structure for Appointments section of the sidebar -->
+  <div class="modal fade" id="appointmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a wider modal -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentDetailsModalLabel">Appointment Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="prescriptionForm" method="post" action="prescribe.php">
+            <div class="form-group">
+              <label for="disease">Disease:</label>
+              <input type="text" class="form-control" id="disease" name="disease" required>
+            </div>
+            <div class="form-group">
+              <label for="allergies">Allergies:</label>
+              <input type="text" class="form-control" id="allergies" name="allergies" required>
+            </div>
+            <div class="form-group">
+              <label for="prescription">Prescription:</label>
+              <textarea class="form-control" id="prescription" name="prescription" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="bloodType">Blood Type:</label>
+              <input type="text" class="form-control" id="bloodType" name="bloodType" required>
+            </div>
+            <div class="form-group">
+              <label for="bloodPressure">Blood Pressure:</label>
+              <input type="text" class="form-control" id="bloodPressure" name="bloodPressure" required>
+            </div>
+            <div class="form-group">
+              <label for="weight">Weight:</label>
+              <input type="text" class="form-control" id="weight" name="weight" required>
+            </div>
+            <div class="form-group">
+              <label for="other">Other:</label>
+              <textarea class="form-control" id="other" name="other" rows="3" required></textarea>
+            </div>
+            <input type="hidden" id="pid" name="pid" value="">
+            <input type="hidden" id="ID" name="ID" value="">
+            <input type="hidden" id="fname" name="fname" value="">
+            <input type="hidden" id="lname" name="lname" value="">
+            <input type="hidden" id="appdate" name="appdate" value="">
+            <input type="hidden" id="apptime" name="apptime" value="">
+            <button type="submit" class="btn btn-primary" name="prescribe">Prescribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    $(document).ready(function() {
+      // Attach click event listener to appointment rows
+      $('.appointment-row').click(function() {
+        var pid = $(this).data('pid');
+        var ID = $(this).data('id');
+        var fname = $(this).data('fname');
+        var lname = $(this).data('lname');
+        var gender = $(this).data('gender');
+        var contact = $(this).data('contact');
+        var appdate = $(this).data('appdate');
+        var apptime = $(this).data('apptime');
+        // Call function to display appointment details in modal
+        displayAppointmentDetails(pid, ID, fname, lname, gender, contact, appdate, apptime, status);
+      });
+    });
+
+    // Function to display appointment details in the modal
+    function displayAppointmentDetails(pid, ID, fname, lname, gender, contact, appdate, apptime, status) {
+      // Set the appointment details in the prescription form
+      document.getElementById('pid').value = pid;
+      document.getElementById('ID').value = ID;
+      document.getElementById('fname').value = fname;
+      document.getElementById('lname').value = lname;
+      document.getElementById('appdate').value = appdate;
+      document.getElementById('apptime').value = apptime;
+
+      // Show the modal
+      $('#appointmentDetailsModal').modal('show');
+    }
+  </script>
 
 
   <!-- Optional JavaScript -->

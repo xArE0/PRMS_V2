@@ -1,3 +1,4 @@
+<!-- This is for fetching the data for Regular Health Checkups section of the sidebar-->
 <?php
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
@@ -8,8 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
     FROM appointmenttb
     LEFT JOIN record ON appointmenttb.ID = record.ID
     LEFT JOIN image ON appointmenttb.ID = image.ID
-    WHERE appointmenttb.pid = $patientID
-    GROUP BY appointmenttb.ID";
+    WHERE appointmenttb.pid = $patientID";
 
     $result_appointments = mysqli_query($con, $query_appointments);
 
