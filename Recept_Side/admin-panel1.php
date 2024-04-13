@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require "../vendor/autoload.php";
+require "../vendor/phpmailer/phpmailer/src/Exception.php";
+require "../vendor/phpmailer/phpmailer/src/PHPMailer.php";
+require "../vendor/phpmailer/phpmailer/src/SMTP.php";
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
 include('newfunc.php');
@@ -151,7 +160,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
 ?>
 
 
-<!-- Code to Approve Mechanism in Appointment Details Section of Sidebar -->
 <?php
 // Establish database connection
 $con = mysqli_connect("localhost", "root", "", "prms_db");
@@ -159,15 +167,64 @@ if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
-  // Sanitizing the input to prevent SQL injection
+  // Sanitize the input to prevent SQL injection
   $appointmentID = mysqli_real_escape_string($con, $_POST['appointmentID']);
 
-  // Update the appointment status in the database
-  $update_query = "UPDATE appointmenttb SET approve_status = 1 WHERE ID = '$appointmentID'";
-  mysqli_query($con, $update_query);
+  // Fetch appointment details from the database
+  $query = "SELECT * FROM appointmenttb WHERE ID = '$appointmentID'";
+  $result = mysqli_query($con, $query);
+
+  if (mysqli_num_rows($result) > 0) {
+    $row = mysqli_fetch_assoc($result);
+
+    // Extract appointment details
+    $pid = $row['pid'];
+    $fname = $row['fname'];
+    $lname = $row['lname'];
+    $gender = $row['gender'];
+    $contact = $row['contact'];
+    $appdate = $row['appdate'];
+    $apptime = $row['apptime'];
+
+    // Prepare email body with appointment details
+    $emailBody = "Your Appointment Has Been Approved!<br><br>";
+    $emailBody .= "<strong>Details:</strong><br>";
+    $emailBody .= "<strong>Name:</strong> $fname $lname<br>";
+    $emailBody .= "<strong>Appointment Date:</strong> $appdate<br>";
+    $emailBody .= "<strong>Appointment Time:</strong> $apptime<br>";
+
+    // Send email using PHPMailer
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->SMTPAuth = true;
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPSecure = 'ssl';
+    $mail->Port = 465;
+    $mail->Username = 'prmsofficialgg@gmail.com';
+    $mail->Password = 'muxhlnzfrmmjerky';
+    $mail->setFrom('prmsofficialgg@gmail.com');
+    $mail->addAddress($_SESSION["email"]);
+    $mail->isHTML(true);
+    $mail->Subject = "Appointment Status";
+    $mail->Body = $emailBody;
+
+    // Send email and update appointment status
+    if ($mail->send()) {
+      $update_query = "UPDATE appointmenttb SET approve_status = 1 WHERE ID = '$appointmentID'";
+      mysqli_query($con, $update_query);
+      echo "Email sent and appointment status updated successfully.";
+    } else {
+      echo "Error sending email: " . $mail->ErrorInfo;
+    }
+  } else {
+    echo "No appointment found with ID: $appointmentID";
+  }
+
   mysqli_close($con);
 }
 ?>
+
+
 
 <!-- Code for Cancel Mechanism in Appointment Details Section of the Sidebar -->
 <?php
@@ -180,6 +237,27 @@ if (!$con) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])) { // Change the parameter name here
   $appointmentID = mysqli_real_escape_string($con, $_POST['cancelAppointmentID']);
   $update_query = "UPDATE appointmenttb SET receptStatus = 0 WHERE ID = '$appointmentID'";
+  $mail = new PHPMailer(true);
+
+  // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+
+  $mail->isSMTP();
+  $mail->SMTPAuth = true;
+
+  $mail->Host = 'smtp.gmail.com';
+  $mail->SMTPSecure = 'ssl';
+  $mail->Port = 465;
+
+  $mail->Username = 'prmsofficialgg@gmail.com';
+  $mail->Password = 'muxhlnzfrmmjerky';
+
+  $mail->setFrom('prmsofficialgg@gmail.com');
+  $mail->addAddress($_SESSION["email"]); //modifiable 
+  $mail->isHTML(true);
+  $mail->Subject = "Appointment Status"; //is this the syntax, modifiable
+  $mail->Body = "Your Appointment has been cancelled. Please Contact Us for Detailed Information"; //is this the syntax ,modifiable
+
+  $mail->send();
   mysqli_query($con, $update_query);
   mysqli_close($con);
 }
