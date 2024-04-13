@@ -10,8 +10,8 @@ TRUNCATE prms_db.appointmenttb;
 TRUNCATE prms_db.contact;
 TRUNCATE prms_db.doctb;
 TRUNCATE prms_db.patreg;
-TRUNCATE prms_db.prestb;
-
+TRUNCATE prms_db.prestb;v
+TRUNCATE prms_db.image;
 -- Creating Database
 
 CREATE TABLE prms_db.appointmenttb (
@@ -123,13 +123,13 @@ VALUES
 ('David Taylor', 'david.taylor@example.com', '1234567890', 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 
 -- Insert dummy data into doctb table
-INSERT INTO doctb (username, password, email, spec, docFees, working_status) 
+INSERT INTO prms_db.doctb (username, password, email, spec, docFees, working_status) 
 VALUES 
-('doctor1', 'doctorpassword1', 'doctor1@example.com', 'Cardiologist', 100, 1),
-('doctor2', 'doctorpassword2', 'doctor2@example.com', 'Dermatologist', 120, 1),
-('doctor3', 'doctorpassword3', 'doctor3@example.com', 'Pediatrician', 90, 1),
-('doctor4', 'doctorpassword4', 'doctor4@example.com', 'Oncologist', 150, 1),
-('doctor5', 'doctorpassword5', 'doctor5@example.com', 'Neurologist', 110, 1);
+('doctora', 'doctorpassword1', 'doctor1@example.com', 'Cardiologist', 100, 1),
+('doctorb', 'doctorpassword2', 'doctor2@example.com', 'Dermatologist', 120, 1),
+('doctorc', 'doctorpassword3', 'doctor3@example.com', 'Pediatrician', 90, 1),
+('doctord', 'doctorpassword4', 'doctor4@example.com', 'Oncologist', 150, 1),
+('doctore', 'doctorpassword5', 'doctor5@example.com', 'Neurologist', 110, 1);
 
 -- Insert dummy data into prestb table
 INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, allergy, prescription) 
@@ -184,4 +184,4 @@ SELECT appointmenttb.ID, appointmenttb.appdate, appointmenttb.apptime, appointme
     LEFT JOIN image ON appointmenttb.ID = image.ID
     Where pid=1
 
-INSERT into prms_db.image(iid,picture,ID) VALUES (6,LOAD_FILE('../assets/images/Patients/pat2.png'),1)
+INSERT into prms_db.image(iid,picture,ID) VALUES (7,LOAD_FILE('../assets/images/Patients/pat2.png'),1)

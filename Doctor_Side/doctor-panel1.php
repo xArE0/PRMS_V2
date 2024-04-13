@@ -475,7 +475,7 @@ if (isset($_POST['upload'])) {
                 </div>
               </div>
               <div class="row" id="appointmentList">
-                <!-- Appointments data will be displayed here -->
+
               </div>
             </div>
           </div>
@@ -500,49 +500,52 @@ if (isset($_POST['upload'])) {
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
           <script>
             $(document).ready(function() {
-              $('.open-modal').click(function() {
+              $(document).on('click', '.open-modal', function() {
                 var appointmentID = $(this).data('appointmentid');
-                var pictures = [];
-
-                $('.open-modal[data-appointmentid="' + appointmentID + '"]').each(function() {
-                  var picture = $(this).data('picture');
-                  pictures.push(picture);
-                });
-
                 $('#modalBody').empty();
-                pictures.forEach(function(picture) {
-                  $('#modalBody').append('<img src="data:image/jpeg;base64,' + picture + '" alt="Patient Picture" class="img-fluid">');
+
+                // Fetch pictures associated with the appointment ID using AJAX
+                $.ajax({
+                  url: 'fetch_pictures.php',
+                  type: 'POST',
+                  data: {
+                    appointmentID: appointmentID
+                  },
+                  dataType: 'json',
+                  success: function(response) {
+                    // Append each picture to the modal body
+                    response.forEach(function(picture) {
+                      $('#modalBody').append('<img src="data:image/jpeg;base64,' + picture + '" alt="Patient Picture" class="img-fluid">');
+                    });
+                  },
+                  error: function() {
+                    console.error('Error fetching pictures');
+                  }
                 });
 
                 $('#pictureModal').modal('show');
               });
+
             });
-          </script>
 
-          <script>
             function searchAppointments() {
-              var patientID = document.getElementById('patientID').value;
-              var xhttp = new XMLHttpRequest();
-              xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                  document.getElementById("appointmentList").innerHTML = this.responseText;
+              var patientID = $('#patientID').val();
+              $.ajax({
+                url: 'fetch_data.php',
+                type: 'POST',
+                data: {
+                  patientID: patientID
+                },
+                success: function(response) {
+                  $('#appointmentList').html(response);
+                },
+                error: function() {
+                  console.error('Error fetching appointments');
                 }
-              };
-              xhttp.open("POST", "fetch_data.php", true);
-              xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-              xhttp.send("patientID=" + patientID);
+              });
             }
           </script>
 
-          <style>
-            .row,
-            .col,
-            .container-fluid,
-            .container,
-            .card {
-              border: 1px black solid;
-            }
-          </style>
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
           <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <?php
-// This block throws error but works somehow so......
 include('../func1.php');
 
 $doctor = $_SESSION['dname'];
@@ -11,6 +10,10 @@ if (isset($_POST['prescribe'])) {
   $disease = $_POST['disease'];
   $allergy = $_POST['allergy'];
   $prescription = $_POST['prescription'];
+  $blood_type = $_POST['blood_type'];
+  $blood_pressure = $_POST['blood_pressure'];
+  $weight = $_POST['weight'];
+  $other = $_POST['other'];
   $pid = $_POST['pid'] ?? '';
   $ID = $_POST['ID'] ?? '';
   $fname = $_POST['fname'] ?? '';
@@ -18,15 +21,57 @@ if (isset($_POST['prescribe'])) {
   $appdate = $_POST['appdate'] ?? '';
   $apptime = $_POST['apptime'] ?? '';
 
-  $query = "INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, allergy, prescription) 
-              VALUES ('$doctor', '$pid', '$ID', '$fname', '$lname', '$appdate', '$apptime', '$disease', '$allergy', '$prescription')";
-  $result = mysqli_query($con, $query);
+  // Insert data into record table
+  $query_record = "INSERT INTO record (blood_type, blood_pressure, weight, other, ID) 
+                   VALUES ('$blood_type', '$blood_pressure', '$weight', '$other', '$ID')";
+  $result_record = mysqli_query($con, $query_record);
 
-  if ($result) {
-    echo "<script>alert('Done');window.location.href = 'doctor-panel1.php';</script>";
+  // Insert data into prestb table
+  $query_prescribe = "INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, allergy, prescription) 
+                      VALUES ('$doctor', '$pid', '$ID', '$fname', '$lname', '$appdate', '$apptime', '$disease', '$allergy', '$prescription')";
+  $result_prescribe = mysqli_query($con, $query_prescribe);
+
+  if ($result_prescribe) {
+    echo "<script>alert('Prescription added successfully');</script>";
+  } else {
+    echo "<script>alert('Error: Prescription not added');</script>";
+  }
+}
+mysqli_close($con);
+?>
+
+<?php
+if (isset($_POST['prescribe'])) {
+  $pid = $_POST['pid'] ?? '';
+  $userID = $pid;
+  if ($_FILES['photo']['name'] != '') {
+    $file_name = $_FILES['photo']['name'];
+    $file_size = $_FILES['photo']['size'];
+    $file_tmp = $_FILES['photo']['tmp_name'];
+    $file_type = $_FILES['photo']['type'];
+
+    // Specify the directory where the file will be stored
+    $target_dir = "../uploads/";
+    $target_file = $target_dir . basename($file_name);
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+      echo "<script>alert('This Photo Already Exists! '); window.location.href = 'doctor-panel1.php';</script>";
+    } else {
+      // Move the uploaded file to the specified directory
+      move_uploaded_file($file_tmp, $target_file);
+
+      // Update the user's photo path in the database
+      $con = mysqli_connect("localhost", "root", "", "prms_db");
+      $query = "INSERT INTO images(picture,ID) VALUES ('$target_file',$ID)";
+      mysqli_query($con, $query);
+    }
+  } else {
+    echo "<script>alert('Please Choose a Photo! '); </script>";
   }
 }
 ?>
+
 
 <html lang="en">
 
@@ -105,33 +150,63 @@ if (isset($_POST['prescribe'])) {
     </h3>
 
     <div class="tab-pane" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
-      <form class="form-group" name="prescribeform" method="post" action="../Doctor_Side/prescribe.php">
+      <form class="form-group" name="prescribeform" method="post" action="prescribe.php" enctype="multipart/form-data">
 
         <div class="row">
           <div class="col-md-4"><label>Disease:</label></div>
-          <div class="col-md-8">
-            <textarea id="disease" cols="86" rows="5" name="disease" required></textarea>
-          </div><br><br><br>
+          <div class="col-md-8"><textarea id="disease" cols="86" rows="5" name="disease" required></textarea></div>
+        </div><br><br><br>
 
+        <div class="row">
           <div class="col-md-4"><label>Allergies:</label></div>
-          <div class="col-md-8">
-            <textarea id="allergy" cols="86" rows="5" name="allergy" required></textarea>
-          </div><br><br><br>
-          <div class="col-md-4"><label>Prescription:</label></div>
-          <div class="col-md-8">
-            <textarea id="prescription" cols="86" rows="10" name="prescription" required></textarea>
-          </div><br><br><br>
-          <input type="hidden" name="pid" value="<?php echo htmlspecialchars($_GET['pid']); ?>">
-          <input type="hidden" name="ID" value="<?php echo htmlspecialchars($_GET['ID']); ?>">
-          <input type="hidden" name="fname" value="<?php echo htmlspecialchars($_GET['fname']); ?>">
-          <input type="hidden" name="lname" value="<?php echo htmlspecialchars($_GET['lname']); ?>">
-          <input type="hidden" name="appdate" value="<?php echo htmlspecialchars($_GET['appdate']); ?>">
-          <input type="hidden" name="apptime" value="<?php echo htmlspecialchars($_GET['apptime']); ?>">
+          <div class="col-md-8"><textarea id="allergy" cols="86" rows="5" name="allergy" required></textarea></div>
+        </div><br><br><br>
 
-          <br><br><br><br>
-          <button type="submit" name="prescribe" value="prescribe" class="btn btn-success" style="margin-left: 40pc;">Prescribe</button>
+        <div class="row">
+          <div class="col-md-4"><label>Prescription:</label></div>
+          <div class="col-md-8"><textarea id="prescription" cols="86" rows="10" name="prescription" required></textarea></div>
+        </div><br><br><br>
+
+        <div class="row">
+          <div class="col-md-4"><label>Blood Type:</label></div>
+          <div class="col-md-8"><input type="text" name="blood_type" required></div>
+        </div><br><br><br>
+
+        <div class="row">
+          <div class="col-md-4"><label>Blood Pressure:</label></div>
+          <div class="col-md-8"><input type="text" name="blood_pressure" required></div>
+        </div><br><br><br>
+
+        <div class="row">
+          <div class="col-md-4"><label>Weight:</label></div>
+          <div class="col-md-8"><input type="text" name="weight" required></div>
+        </div><br><br><br>
+
+        <div class="row">
+          <div class="col-md-4"><label>Other:</label></div>
+          <div class="col-md-8"><textarea name="other" required></textarea></div>
+        </div><br><br><br>
+
+        <div class="row">
+          <div class="form-group">
+            <input type="file" class="form-control-file" id="photo" name="photo">
+          </div>
+        </div><br><br><br>
+
+        <input type="hidden" name="pid" value="<?php echo htmlspecialchars($_GET['pid']); ?>">
+        <input type="hidden" name="ID" value="<?php echo htmlspecialchars($_GET['ID']); ?>">
+        <input type="hidden" name="fname" value="<?php echo htmlspecialchars($_GET['fname']); ?>">
+        <input type="hidden" name="lname" value="<?php echo htmlspecialchars($_GET['lname']); ?>">
+        <input type="hidden" name="appdate" value="<?php echo htmlspecialchars($_GET['appdate']); ?>">
+        <input type="hidden" name="apptime" value="<?php echo htmlspecialchars($_GET['apptime']); ?>">
+
+        <br><br><br><br>
+        <button type="submit" name="prescribe" value="prescribe" class="btn btn-success" style="margin-left: 40pc;">Prescribe</button>
       </form>
       <br>
     </div>
   </div>
   </div>
+</body>
+
+</html>
