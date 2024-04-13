@@ -257,7 +257,7 @@ if (isset($_POST['upload'])) {
                     </div>
                     <div class="col">
                       <div class="row" style="padding: 10px;">
-                        <div class="col-5" style="padding-top: 40px;">
+                        <div class="col-4" style="padding-top: 40px;">
                           <h4>General Information:</h4>
                         </div>
                         <div class="col" style="border: 2px solid black; border-radius:10px; padding:10px 10px; font-family: monospace;font-size: 20px;">
@@ -449,11 +449,11 @@ if (isset($_POST['upload'])) {
               <div class="row">
                 <div class="col-md-6">
                   <form id="searchForm">
-                    <div class="form-group">
+                    <div class="form-group" style="padding: 10px;">
                       <label for="patientID">Patient ID:</label>
                       <input type="text" class="form-control" id="patientID" name="patientID" placeholder="Enter Patient ID">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="searchAppointments()">Search</button>
+                    <button type="button" class="btn btn-info" onclick="searchAppointments()">Search</button>
                   </form>
                 </div>
               </div>
@@ -463,9 +463,9 @@ if (isset($_POST['upload'])) {
             </div>
           </div>
 
-          <!-- Modal -->
+          <!-- Modal for Pictures in the Regular Health Checkup section of the sidebar-->
           <div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a larger modal -->
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="pictureModalLabel">Patient Pictures</h5>
@@ -479,6 +479,7 @@ if (isset($_POST['upload'])) {
               </div>
             </div>
           </div>
+
 
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
           <script>
@@ -552,7 +553,7 @@ if (isset($_POST['upload'])) {
     </div>
   </div>
 
-  <!-- Testing the user detail popup thing -->
+  <!-- Modal for Showing Patient Details -->
   <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content" style="background: linear-gradient(to right, #b4b4b4, #c5f6f6);">
