@@ -600,7 +600,7 @@ if (isset($_POST['upload'])) {
 
   <!-- Modal structure for Appointments section of the sidebar -->
   <div class="modal fade" id="appointmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="appointmentDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a wider modal -->
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="appointmentDetailsModalLabel">Appointment Details</h5>
@@ -609,7 +609,7 @@ if (isset($_POST['upload'])) {
           </button>
         </div>
         <div class="modal-body">
-          <form id="prescriptionForm" method="post" action="prescribe.php">
+          <form id="prescriptionForm" method="post" action="prescribe.php" enctype="multipart/form-data">
             <div class="form-group">
               <label for="disease">Disease:</label>
               <input type="text" class="form-control" id="disease" name="disease" required>
@@ -638,6 +638,10 @@ if (isset($_POST['upload'])) {
               <label for="other">Other:</label>
               <textarea class="form-control" id="other" name="other" rows="3" required></textarea>
             </div>
+            <div class="form-group">
+              <label for="images">Upload Images:</label>
+              <input type="file" class="form-control-file" id="images" name="images[]" multiple accept="image/*">
+            </div>
             <input type="hidden" id="pid" name="pid" value="">
             <input type="hidden" id="ID" name="ID" value="">
             <input type="hidden" id="fname" name="fname" value="">
@@ -650,6 +654,7 @@ if (isset($_POST['upload'])) {
       </div>
     </div>
   </div>
+
 
   <script>
     $(document).ready(function() {

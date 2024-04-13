@@ -28,6 +28,18 @@ if (isset($_POST['prescribe'])) {
                       VALUES ('$doctor', '$pid', '$ID', '$fname', '$lname', '$appdate', '$apptime', '$disease', '$allergies', '$prescription')";
   $resultPrescribe = mysqli_query($con, $queryPrescribe);
 
+  // Upload images
+  $images = $_FILES['images'];
+
+  foreach ($images['name'] as $key => $name) {
+    $imageData = file_get_contents($images['tmp_name'][$key]);
+    $escapedImageData = mysqli_real_escape_string($con, $imageData);
+
+    $queryImage = "INSERT INTO image (pname, picture, ID) 
+                    VALUES ('$name', '$escapedImageData', '$ID')";
+    mysqli_query($con, $queryImage);
+  }
+
   if ($resultPrescribe) {
     echo "<script>alert('Prescription added successfully');window.location.href = 'doctor-panel1.php';</script>";
   } else {
