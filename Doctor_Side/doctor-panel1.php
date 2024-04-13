@@ -396,52 +396,7 @@ if (isset($_POST['upload'])) {
               </tbody>
             </table>
             <br>
-          </div>
-
-          <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-pat-list">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">First Name</th>
-                  <th scope="col">Last Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Contact</th>
-                  <th scope="col">Doctor Name</th>
-                  <th scope="col">Consultancy Fees</th>
-                  <th scope="col">Appointment Date</th>
-                  <th scope="col">Appointment Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php
-
-                $con = mysqli_connect("localhost", "root", "", "prms_db");
-                global $con;
-
-                $query = "select * from appointmenttb;";
-                $result = mysqli_query($con, $query);
-                while ($row = mysqli_fetch_array($result)) {
-
-                  #$fname = $row['fname'];
-                  #$lname = $row['lname'];
-                  #$email = $row['email'];
-                  #$contact = $row['contact'];
-                ?>
-                  <tr>
-                    <td><?php echo $row['fname']; ?></td>
-                    <td><?php echo $row['lname']; ?></td>
-                    <td><?php echo $row['email']; ?></td>
-                    <td><?php echo $row['contact']; ?></td>
-                    <td><?php echo $row['doctor']; ?></td>
-                    <td><?php echo $row['docFees']; ?></td>
-                    <td><?php echo $row['appdate']; ?></td>
-                    <td><?php echo $row['apptime']; ?></td>
-                  </tr>
-                <?php } ?>
-              </tbody>
-            </table>
-            <br>
-          </div>
+          </div>         
 
           <!-- Regular Health Checkup side of sidebar -->
           <div class="tab-pane fade" id="list-health-checkups" role="tabpanel" aria-labelledby="list-health-checkups-list">
@@ -458,100 +413,80 @@ if (isset($_POST['upload'])) {
                 </div>
               </div>
               <div class="row" id="appointmentList">
-
               </div>
             </div>
           </div>
-
-          <!-- Modal for Pictures in the Regular Health Checkup section of the sidebar-->
-          <div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a larger modal -->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="pictureModalLabel">Patient Pictures</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body" id="modalBody">
-                  <!-- Images will be displayed here -->
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-          <script>
-            $(document).ready(function() {
-              $(document).on('click', '.open-modal', function() {
-                var appointmentID = $(this).data('appointmentid');
-                $('#modalBody').empty();
-
-                // Fetch pictures associated with the appointment ID using AJAX
-                $.ajax({
-                  url: 'fetch_pictures.php',
-                  type: 'POST',
-                  data: {
-                    appointmentID: appointmentID
-                  },
-                  dataType: 'json',
-                  success: function(response) {
-                    // Append each picture to the modal body
-                    response.forEach(function(picture) {
-                      $('#modalBody').append('<img src="data:image/jpeg;base64,' + picture + '" alt="Patient Picture" class="img-fluid">');
-                    });
-                  },
-                  error: function() {
-                    console.error('Error fetching pictures');
-                  }
-                });
-
-                $('#pictureModal').modal('show');
-              });
-
-            });
-
-            function searchAppointments() {
-              var patientID = $('#patientID').val();
-              $.ajax({
-                url: 'fetch_data.php',
-                type: 'POST',
-                data: {
-                  patientID: patientID
-                },
-                success: function(response) {
-                  $('#appointmentList').html(response);
-                },
-                error: function() {
-                  console.error('Error fetching appointments');
-                }
-              });
-            }
-          </script>
-
-
-          <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
-          <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-            <form class="form-group" method="post" action="../Recept_Side/admin-panel1.php">
-              <div class="row">
-                <div class="col-md-4"><label>Doctor Name:</label></div>
-                <div class="col-md-8"><input type="text" class="form-control" name="doctor" required></div><br><br>
-                <div class="col-md-4"><label>Password:</label></div>
-                <div class="col-md-8"><input type="password" class="form-control" name="dpassword" required></div><br><br>
-                <div class="col-md-4"><label>Email ID:</label></div>
-                <div class="col-md-8"><input type="email" class="form-control" name="demail" required></div><br><br>
-                <div class="col-md-4"><label>Consultancy Fees:</label></div>
-                <div class="col-md-8"><input type="text" class="form-control" name="docFees" required></div><br><br>
-              </div>
-              <input type="submit" name="docsub" value="Add Doctor" class="btn btn-primary">
-            </form>
-          </div>
-          <div class="tab-pane fade" id="list-attend" role="tabpanel" aria-labelledby="list-attend-list">...</div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Modal for Pictures in the Regular Health Checkup section of the sidebar-->
+  <div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a larger modal -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pictureModalLabel">Patient Pictures</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Images will be displayed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $(document).on('click', '.open-modal', function() {
+        var appointmentID = $(this).data('appointmentid');
+        $('#modalBody').empty();
+
+        // Fetch pictures associated with the appointment ID using AJAX
+        $.ajax({
+          url: 'fetch_pictures.php',
+          type: 'POST',
+          data: {
+            appointmentID: appointmentID
+          },
+          dataType: 'json',
+          success: function(response) {
+            // Append each picture to the modal body
+            response.forEach(function(picture) {
+              $('#modalBody').append('<img src="data:image/jpeg;base64,' + picture + '" alt="Patient Picture" class="img-fluid">');
+            });
+          },
+          error: function() {
+            console.error('Error fetching pictures');
+          }
+        });
+
+        $('#pictureModal').modal('show');
+      });
+
+    });
+
+    function searchAppointments() {
+      var patientID = $('#patientID').val();
+      $.ajax({
+        url: 'fetch_data.php',
+        type: 'POST',
+        data: {
+          patientID: patientID
+        },
+        success: function(response) {
+          $('#appointmentList').html(response);
+        },
+        error: function() {
+          console.error('Error fetching appointments');
+        }
+      });
+    }
+  </script>
 
   <!-- Modal for Showing Patient Details -->
   <div class="modal fade" id="patientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
@@ -688,7 +623,6 @@ if (isset($_POST['upload'])) {
       $('#appointmentDetailsModal').modal('show');
     }
   </script>
-
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
