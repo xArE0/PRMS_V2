@@ -203,6 +203,7 @@ if (isset($_POST['upload'])) {
           <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your Profile</a>
           <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list" role="tab" data-toggle="list" aria-controls="home">Appointments</a>
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
+          <a class="list-group-item list-group-item-action" href="#list-health-checkups" id="list-health-checkups-list" role="tab" data-toggle="list" aria-controls="home">Regular Health Checkups</a>
         </div><br>
 
         <!-- Dashboard Content -->
@@ -368,7 +369,7 @@ if (isset($_POST['upload'])) {
           </div>
 
           <!-- Prescription List Section -->
-          <div class="tab-pane fade show active" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
+          <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -458,6 +459,90 @@ if (isset($_POST['upload'])) {
             </table>
             <br>
           </div>
+
+          <!-- Regular Health Checkup side of sidebar -->
+          <div class="tab-pane fade show active" id="list-health-checkups" role="tabpanel" aria-labelledby="list-health-checkups-list">
+            <div class="container-fluid container-fullw bg-white">
+              <div class="row">
+                <div class="col-md-6">
+                  <form id="searchForm">
+                    <div class="form-group">
+                      <label for="patientID">Patient ID:</label>
+                      <input type="text" class="form-control" id="patientID" name="patientID" placeholder="Enter Patient ID">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="searchAppointments()">Search</button>
+                  </form>
+                </div>
+              </div>
+              <div class="row" id="appointmentList">
+                <!-- Appointments data will be displayed here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="pictureModalLabel">Patient Pictures</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                  <!-- Images will be displayed here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+          <script>
+            $(document).ready(function() {
+              $('.open-modal').click(function() {
+                var appointmentID = $(this).data('appointmentid');
+                var pictures = [];
+
+                $('.open-modal[data-appointmentid="' + appointmentID + '"]').each(function() {
+                  var picture = $(this).data('picture');
+                  pictures.push(picture);
+                });
+
+                $('#modalBody').empty();
+                pictures.forEach(function(picture) {
+                  $('#modalBody').append('<img src="data:image/jpeg;base64,' + picture + '" alt="Patient Picture" class="img-fluid">');
+                });
+
+                $('#pictureModal').modal('show');
+              });
+            });
+          </script>
+
+          <script>
+            function searchAppointments() {
+              var patientID = document.getElementById('patientID').value;
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                  document.getElementById("appointmentList").innerHTML = this.responseText;
+                }
+              };
+              xhttp.open("POST", "fetch_data.php", true);
+              xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+              xhttp.send("patientID=" + patientID);
+            }
+          </script>
+
+          <style>
+            .row,
+            .col,
+            .container-fluid,
+            .container,
+            .card {
+              border: 1px black solid;
+            }
+          </style>
 
           <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
           <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">

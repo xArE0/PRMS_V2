@@ -13,35 +13,6 @@ TRUNCATE prms_db.patreg;
 TRUNCATE prms_db.prestb;
 
 -- Creating Database
-CREATE TABLE prms_db.record(
-  rid INT PRIMARY KEY AUTO_INCREMENT,
-  blood_type VARCHAR(20) NOT NULL,
-  blood_pressure VARCHAR(30) NOT NULL,
-  weight VARCHAR(30) NOT NULL,
-  other VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE prms_db.image(
-  iid INT PRIMARY KEY AUTO_INCREMENT,
-  pname VARCHAR(30) NOT NULL,
-  picture LONGBLOB DEFAULT NULL 
-);
-
-CREATE TABLE prms_db.patreg (
-  pid INT(11) PRIMARY KEY AUTO_INCREMENT,
-  fname VARCHAR(20) NOT NULL,
-  lname VARCHAR(20) NOT NULL,
-  gender VARCHAR(10) NOT NULL,
-  dob DATE NOT NULL,
-  email VARCHAR(30) NOT NULL,
-  contact VARCHAR(10) NOT NULL,
-  password VARCHAR(30) NOT NULL,
-  cpassword VARCHAR(30) NOT NULL,
-  picture LONGBLOB DEFAULT NULL,
-  active_status INT NOT NULL DEFAULT 1,
-  iid INT DEFAULT NULL,
-  FOREIGN KEY (iid) REFERENCES image(iid)
-);
 
 CREATE TABLE prms_db.appointmenttb (
   ID INT PRIMARY KEY AUTO_INCREMENT,
@@ -58,9 +29,39 @@ CREATE TABLE prms_db.appointmenttb (
   userStatus INT NOT NULL DEFAULT 1,
   doctorStatus INT NOT NULL DEFAULT 1,
   receptStatus INT NOT NULL DEFAULT 1,
-  approve_status INT NOT NULL DEFAULT 0,
-  rid INT DEFAULT NULL,
-  FOREIGN KEY (rid) REFERENCES record(rid)
+  approve_status INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE prms_db.record(
+  rid INT PRIMARY KEY AUTO_INCREMENT,
+  blood_type VARCHAR(20) NOT NULL,
+  blood_pressure VARCHAR(30) NOT NULL,
+  weight VARCHAR(30) NOT NULL,
+  other VARCHAR(100) NOT NULL,
+  ID INT NOT NULL,
+  FOREIGN KEY (ID) REFERENCES appointmenttb(ID)
+);
+
+CREATE TABLE prms_db.image(
+  iid INT PRIMARY KEY AUTO_INCREMENT,
+  pname VARCHAR(30) NOT NULL,
+  picture LONGBLOB DEFAULT NULL,
+  ID INT NOT NULL,
+  FOREIGN KEY (ID) REFERENCES appointmenttb(ID)
+);
+
+CREATE TABLE prms_db.patreg (
+  pid INT(11) PRIMARY KEY AUTO_INCREMENT,
+  fname VARCHAR(20) NOT NULL,
+  lname VARCHAR(20) NOT NULL,
+  gender VARCHAR(10) NOT NULL,
+  dob DATE NOT NULL,
+  email VARCHAR(30) NOT NULL,
+  contact VARCHAR(10) NOT NULL,
+  password VARCHAR(30) NOT NULL,
+  cpassword VARCHAR(30) NOT NULL,
+  picture LONGBLOB DEFAULT NULL,
+  active_status INT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE prms_db.admintb (
@@ -103,55 +104,84 @@ CREATE TABLE prms_db.prestb (
 
 
 -- Dummy data for prms_db.record
-INSERT INTO prms_db.record (rid,blood_type, blood_pressure, weight, other) VALUES
-  (1,'A+', '120/80', '75 kg', 'No known medical conditions'),
-  (2,'B-', '110/70', '68 kg', 'Allergic to peanuts'),
-  (3,'O+', '130/90', '82 kg', 'Diabetic'),
-  (4,'AB+', '125/85', '72 kg', 'High cholesterol');
+-- Insert dummy data into admintb table
+INSERT INTO admintb (username, password) 
+VALUES 
+('admin1', 'adminpassword1'),
+('admin2', 'adminpassword2'),
+('admin3', 'adminpassword3'),
+('admin4', 'adminpassword4'),
+('admin5', 'adminpassword5');
 
--- Dummy data for prms_db.image
-INSERT INTO prms_db.image (iid,pname, picture) VALUES
-  (1,'John Doe', LOAD_FILE('/path/to/image1.jpg')),
-  (2,'Jane Smith', LOAD_FILE('/path/to/image2.jpg')),
-  (3,'Michael Johnson', LOAD_FILE('/path/to/image3.jpg')),
-  (4,'Emily Davis', LOAD_FILE('/path/to/image4.jpg'));
+-- Insert dummy data into contact table
+INSERT INTO contact (name, email, contact, message) 
+VALUES 
+('John Doe', 'john.doe@example.com', '1234567890', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+('Alice Smith', 'alice.smith@example.com', '9876543210', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'),
+('Michael Brown', 'michael.brown@example.com', '1234567890', 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+('Emily Jones', 'emily.jones@example.com', '9876543210', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'),
+('David Taylor', 'david.taylor@example.com', '1234567890', 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 
--- Dummy data for prms_db.patreg
-INSERT INTO prms_db.patreg (fname, lname, gender, dob, email, contact, password, cpassword, picture, iid) VALUES
-  ('John', 'Doe', 'Male', '1985-06-15', 'john.doe@example.com', '1234567890', 'password123', 'password123', LOAD_FILE('/path/to/image1.jpg'), 1),
-  ('Jane', 'Smith', 'Female', '1992-09-20', 'jane.smith@example.com', '0987654321', 'password456', 'password456', LOAD_FILE('/path/to/image2.jpg'), 2),
-  ('Michael', 'Johnson', 'Male', '1978-03-01', 'michael.johnson@example.com', '5555555555', 'password789', 'password789', LOAD_FILE('/path/to/image3.jpg'), 3),
-  ('Emily', 'Davis', 'Female', '1990-11-12', 'emily.davis@example.com', '9999999999', 'passwordabc', 'passwordabc', LOAD_FILE('/path/to/image4.jpg'), 4);
+-- Insert dummy data into doctb table
+INSERT INTO doctb (username, password, email, spec, docFees, working_status) 
+VALUES 
+('doctor1', 'doctorpassword1', 'doctor1@example.com', 'Cardiologist', 100, 1),
+('doctor2', 'doctorpassword2', 'doctor2@example.com', 'Dermatologist', 120, 1),
+('doctor3', 'doctorpassword3', 'doctor3@example.com', 'Pediatrician', 90, 1),
+('doctor4', 'doctorpassword4', 'doctor4@example.com', 'Oncologist', 150, 1),
+('doctor5', 'doctorpassword5', 'doctor5@example.com', 'Neurologist', 110, 1);
 
--- Dummy data for prms_db.appointmenttb
-INSERT INTO prms_db.appointmenttb (pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, rid) VALUES
-  (1, 'John', 'Doe', 'Male', 'john.doe@example.com', '1234567890', 'Dr. Smith', 100, '2023-05-01', '10:00:00', 1),
-  (2, 'Jane', 'Smith', 'Female', 'jane.smith@example.com', '0987654321', 'Dr. Johnson', 120, '2023-05-15', '14:30:00', 2),
-  (3, 'Michael', 'Johnson', 'Male', 'michael.johnson@example.com', '5555555555', 'Dr. Davis', 150, '2023-06-01', '09:00:00', 3),
-  (4, 'Emily', 'Davis', 'Female', 'emily.davis@example.com', '9999999999', 'Dr. Smith', 100, '2023-06-20', '16:00:00', 4);
+-- Insert dummy data into prestb table
+INSERT INTO prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, allergy, prescription) 
+VALUES 
+('Dr. Smith', 1, 1, 'John', 'Doe', '2024-04-15', '10:00:00', 'Fever', 'None', 'Paracetamol 500mg'),
+('Dr. Johnson', 2, 2, 'Alice', 'Smith', '2024-04-16', '11:30:00', 'Allergy', 'Peanuts', 'Antihistamines'),
+('Dr. Lee', 3, 3, 'Michael', 'Brown', '2024-04-17', '12:00:00', 'Headache', 'None', 'Rest and fluids'),
+('Dr. Martinez', 4, 4, 'Emily', 'Jones', '2024-04-18', '13:30:00', 'Injury', 'None', 'Painkillers and rest'),
+('Dr. White', 5, 5, 'David', 'Taylor', '2024-04-19', '14:00:00', 'Stomachache', 'Spicy food', 'Antacids');
 
--- Dummy data for prms_db.admintb
-INSERT INTO prms_db.admintb (username, password) VALUES
-  ('admin', 'password123'),
-  ('superadmin', 'password456');
+-- Insert dummy data into appointmenttb table
+INSERT INTO appointmenttb (pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus, receptStatus, approve_status) 
+VALUES 
+(1, 'John', 'Doe', 'Male', 'john.doe@example.com', '1234567890', 'Dr. Smith', 50, '2024-04-15', '10:00:00', 1, 1, 1, 0),
+(2, 'Alice', 'Smith', 'Female', 'alice.smith@example.com', '9876543210', 'Dr. Johnson', 60, '2024-04-16', '11:30:00', 1, 1, 1, 0),
+(3, 'Michael', 'Brown', 'Male', 'michael.brown@example.com', '1234567890', 'Dr. Lee', 40, '2024-04-17', '12:00:00', 1, 1, 1, 0),
+(4, 'Emily', 'Jones', 'Female', 'emily.jones@example.com', '9876543210', 'Dr. Martinez', 55, '2024-04-18', '13:30:00', 1, 1, 1, 0),
+(5, 'David', 'Taylor', 'Male', 'david.taylor@example.com', '1234567890', 'Dr. White', 45, '2024-04-19', '14:00:00', 1, 1, 1, 0);
 
--- Dummy data for prms_db.contact
-INSERT INTO prms_db.contact (name, email, contact, message) VALUES
-  ('John Doe', 'john.doe@example.com', '1234567890', 'I have a question about my appointment.'),
-  ('Jane Smith', 'jane.smith@example.com', '0987654321', 'I need to cancel my appointment.'),
-  ('Michael Johnson', 'michael.johnson@example.com', '5555555555', 'I have a suggestion for the website.'),
-  ('Emily Davis', 'emily.davis@example.com', '9999999999', 'I would like to schedule a new appointment.');
+-- Insert dummy data into record table
+INSERT INTO record (blood_type, blood_pressure, weight, other, ID) 
+VALUES 
+('A+', '120/80', '70 kg', 'Normal', 1),
+('B-', '130/90', '65 kg', 'High BP', 2),
+('AB+', '140/90', '75 kg', 'Normal', 3),
+('O-', '110/70', '60 kg', 'Low BP', 4),
+('A-', '125/85', '68 kg', 'Normal', 5);
 
--- Dummy data for prms_db.doctb
-INSERT INTO prms_db.doctb (username, password, email, spec, docFees, picture) VALUES
-  ('Dr.Smith', 'password123', 'dr.smith@example.com', 'General Practitioner', 100, LOAD_FILE('/path/to/image5.jpg')),
-  ('Dr.Johnson', 'password456', 'dr.johnson@example.com', 'Cardiologist', 150, LOAD_FILE('/path/to/image6.jpg')),
-  ('Dr.Davis', 'password789', 'dr.davis@example.com', 'Pediatrician', 120, LOAD_FILE('/path/to/image7.jpg')),
-  ('Dr.Lee', 'passwordabc', 'dr.lee@example.com', 'Dermatologist', 180, LOAD_FILE('/path/to/image8.jpg'));
+INSERT INTO image (pname, picture, ID) 
+VALUES 
+('John Doe Picture', '/path/to/john_doe_picture.jpg', 1),
+('Alice Smith Picture', '/path/to/alice_smith_picture.jpg', 2),
+('Michael Brown Picture', '/path/to/michael_brown_picture.jpg', 3),
+('Emily Jones Picture', '/path/to/emily_jones_picture.jpg', 4),
+('David Taylor Picture', '/path/to/david_taylor_picture.jpg', 5);
 
--- Dummy data for prms_db.prestb
-INSERT INTO prms_db.prestb (doctor, pid, ID, fname, lname, appdate, apptime, disease, allergy, prescription) VALUES
-  ('Dr.Smith', 1, 1, 'John', 'Doe', '2023-05-01', '10:00:00', 'Common cold', 'None', 'Paracetamol, Decongestant'),
-  ('Dr.Johnson', 2, 2, 'Jane', 'Smith', '2023-05-15', '14:30:00', 'High blood pressure', 'Penicillin', 'Antihypertensive medication'),
-  ('Dr.Davis', 3, 3, 'Michael', 'Johnson', '2023-06-01', '09:00:00', 'Asthma', 'Dust mites', 'Inhaler, Antihistamine'),
-  ('Dr.Smith', 4, 4, 'Emily', 'Davis', '2023-06-20', '16:00:00', 'Acne', 'None', 'Topical medication, Oral antibiotics');
+-- Insert dummy data into patreg table
+INSERT INTO patreg (fname, lname, gender, dob, email, contact, password, cpassword, picture, active_status) 
+VALUES 
+('John', 'Doe', 'Male', '1990-01-01', 'john.doe@example.com', '1234567890', 'password', 'password', NULL, 1),
+('Alice', 'Smith', 'Female', '1995-05-05', 'alice.smith@example.com', '9876543210', 'password', 'password', NULL, 1),
+('Michael', 'Brown', 'Male', '1988-08-08', 'michael.brown@example.com', '1234567890', 'password', 'password', NULL, 1),
+('Emily', 'Jones', 'Female', '1992-02-02', 'emily.jones@example.com', '9876543210', 'password', 'password', NULL, 1),
+('David', 'Taylor', 'Male', '1985-12-12', 'david.taylor@example.com', '1234567890', 'password', 'password', NULL, 1);
+
+
+
+
+SELECT appointmenttb.ID, appointmenttb.appdate, appointmenttb.apptime, appointmenttb.doctor, record.*, image.picture
+    FROM appointmenttb
+    LEFT JOIN record ON appointmenttb.ID = record.ID
+    LEFT JOIN image ON appointmenttb.ID = image.ID
+    Where pid=1
+
+INSERT into prms_db.image(iid,picture,ID) VALUES (6,LOAD_FILE('../assets/images/Patients/pat2.png'),1)
