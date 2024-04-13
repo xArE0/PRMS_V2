@@ -120,7 +120,7 @@ VALUES
 
 INSERT INTO prms_db.patreg (fname, lname, gender, dob, email, contact, password, cpassword, picture, active_status) 
 VALUES 
-('Hari', 'Sharma', 'Male', '1990-01-01', 'hari.sharma@gmail.com', '1234567890', 'Hari123', 'Hari123', NULL, 1),
+('Avishek', 'Shrestha', 'Male', '2004-01-01', 'avishek@gmail.com', '9861921546', 'avi123', 'avi123', NULL, 1),
 ('Sita', 'Ghimire', 'Female', '1995-05-05', 'sita.ghimire@gmail.com', '9876543210', 'Sita123', 'Sita123', NULL, 1),
 ('Rajan', 'Shrestha', 'Male', '1988-08-08', 'rajan.shrestha@gmail.com', '1234567890', 'Rajan123', 'Rajan123', NULL, 1),
 ('Gita', 'Maharjan', 'Female', '1992-02-02', 'gita.maharjan@gmail.com', '9876543210', 'Gita123', 'Gita123', NULL, 1),
