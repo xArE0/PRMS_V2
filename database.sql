@@ -160,7 +160,7 @@ VALUES
 
 INSERT INTO prms_db.image (pname, picture, ID) 
 VALUES 
-('Hari Sharma Picture', '../assets/images/Patients/pat1.png', 1),
+('Hari Sharma Picture', '../assets/images/Patients/pat1.png', 4),
 ('Sita Ghimire Picture', '../assets/images/Patients/pat2.png', 1),
 ('Rajan Shrestha Picture', '../assets/images/Patients/pat3.png', 2),
 ('Gita Maharjan Picture', '../assets/images/Patients/pat4.png', 2),
@@ -168,11 +168,11 @@ VALUES
 
 
 
-SELECT appointmenttb.ID, appointmenttb.appdate, appointmenttb.apptime, appointmenttb.doctor, record.*, image.picture
-    FROM appointmenttb
-    LEFT JOIN record ON appointmenttb.ID = record.ID
-    LEFT JOIN image ON appointmenttb.ID = image.ID
-    Where pid=1
+SELECT DISTINCT appointmenttb.ID, appointmenttb.appdate, appointmenttb.apptime, appointmenttb.doctor, record.*, image.picture
+FROM appointmenttb
+LEFT JOIN record ON appointmenttb.ID = record.ID
+LEFT JOIN image ON appointmenttb.ID = image.ID
+WHERE appointmenttb.pid = 1;
 
 INSERT into prms_db.image(iid,picture,ID) VALUES (7,LOAD_FILE('../assets/images/Patients/pat2.png'),1)
 
