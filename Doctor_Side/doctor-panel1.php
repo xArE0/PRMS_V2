@@ -205,18 +205,19 @@ if (isset($_POST['upload'])) {
           <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list" role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
           <a class="list-group-item list-group-item-action" href="#list-health-checkups" id="list-health-checkups-list" role="tab" data-toggle="list" aria-controls="home">Regular Health Checkups</a>
         </div><br>
-
-        <!-- Dashboard Content -->
       </div>
+
+      <!-- DashBoard Content -->
       <div class="col-md-9" style="margin-top: 3%;">
         <div class="tab-content" id="nav-tabContent" style="width: 950px;">
-          <div class="tab-pane fade " id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
+          <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
             <div class="container-fluid container-fullw bg-white">
               <div class="welcome">
                 <img src="../assets/images/hosue.jpg" class="welcome-img" alt="Welcome Image">
               </div>
             </div>
           </div>
+
 
           <!-- Your Profile Content-->
           <?php
@@ -284,7 +285,7 @@ if (isset($_POST['upload'])) {
           ?>
 
           <!-- Appointments Section of the Sidebar -->
-          <div class="tab-pane fade show active" id="list-app" role="tabpanel" aria-labelledby="list-home-list">
+          <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-home-list">
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -396,7 +397,7 @@ if (isset($_POST['upload'])) {
               </tbody>
             </table>
             <br>
-          </div>         
+          </div>
 
           <!-- Regular Health Checkup side of sidebar -->
           <div class="tab-pane fade" id="list-health-checkups" role="tabpanel" aria-labelledby="list-health-checkups-list">
@@ -420,7 +421,7 @@ if (isset($_POST['upload'])) {
       </div>
     </div>
   </div>
-  
+
   <!-- Modal for Pictures in the Regular Health Checkup section of the sidebar-->
   <div class="modal fade" id="pictureModal" tabindex="-1" role="dialog" aria-labelledby="pictureModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document"> <!-- Adjusted modal-dialog class to modal-lg for a larger modal -->
