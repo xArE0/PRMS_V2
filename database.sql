@@ -120,7 +120,7 @@ VALUES
 
 INSERT INTO prms_db.patreg (fname, lname, gender, dob, email, contact, password, cpassword, picture, active_status) 
 VALUES 
-('Avishek', 'Shrestha', 'Male', '2004-01-01', 'avishek@gmail.com', '9861921546', 'avi123', 'avi123', NULL, 1),
+('Abhishek', 'Shrestha', 'Male', '2004-01-01', 'abhishrestha987@gmail.com', '9861921546', 'avi123', 'avi123', NULL, 1),
 ('Sita', 'Ghimire', 'Female', '1995-05-05', 'sita.ghimire@gmail.com', '9876543210', 'Sita123', 'Sita123', NULL, 1),
 ('Rajan', 'Shrestha', 'Male', '1988-08-08', 'rajan.shrestha@gmail.com', '1234567890', 'Rajan123', 'Rajan123', NULL, 1),
 ('Gita', 'Maharjan', 'Female', '1992-02-02', 'gita.maharjan@gmail.com', '9876543210', 'Gita123', 'Gita123', NULL, 1),
@@ -136,8 +136,8 @@ VALUES
 
 INSERT INTO prms_db.appointmenttb (pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus, receptStatus, approve_status) 
 VALUES 
-(1, 'Hari', 'Sharma', 'Male', 'hari.sharma@gmail.com', '1234567890', 'aayush', 50, '2024-04-15', '10:00:00', 1, 1, 1, 0),
-(2, 'Sita', 'Ghimire', 'Female', 'sita.ghimire@gmail.com', '9876543210', 'aayush', 60, '2024-04-16', '11:30:00', 1, 1, 1, 0),
+(1, 'Abhishek', 'Shrestha', 'Male', 'abhishrestha987@gmail.com', '9861921546', 'aayush', 100, '2024-04-15', '10:00:00', 1, 1, 1, 0),
+(1, 'Abhishek', 'Shrestha', 'Male', 'abhishrestha987@gmail.com', '9861921546', 'aayush', 100, '2024-04-16', '11:30:00', 1, 1, 1, 0),
 (3, 'Rajan', 'Shrestha', 'Male', 'rajan.shrestha@gmail.com', '1234567890', 'aayush', 40, '2024-04-17', '12:00:00', 1, 1, 1, 0),
 (4, 'Gita', 'Maharjan', 'Female', 'gita.maharjan@gmail.com', '9876543210', 'aayush', 55, '2024-04-18', '13:30:00', 1, 1, 1, 0),
 (5, 'Dipesh', 'Bhattarai', 'Male', 'dipesh.bhattarai@gmail.com', '1234567890', 'aayush', 45, '2024-04-19', '14:00:00', 1, 1, 1, 0);
@@ -160,11 +160,11 @@ VALUES
 
 INSERT INTO prms_db.image (pname, picture, ID) 
 VALUES 
-('Hari Sharma Picture', '/path/to/hari_sharma_picture.jpg', 1),
-('Sita Ghimire Picture', '/path/to/sita_ghimire_picture.jpg', 1),
-('Rajan Shrestha Picture', '/path/to/rajan_shrestha_picture.jpg', 2),
-('Gita Maharjan Picture', '/path/to/gita_maharjan_picture.jpg', 2),
-('Dipesh Bhattarai Picture', '/path/to/dipesh_bhattarai_picture.jpg', 2);
+('Hari Sharma Picture', '../assets/images/Patients/pat1.png', 1),
+('Sita Ghimire Picture', '../assets/images/Patients/pat2.png', 1),
+('Rajan Shrestha Picture', '../assets/images/Patients/pat3.png', 2),
+('Gita Maharjan Picture', '../assets/images/Patients/pat4.png', 2),
+('Dipesh Bhattarai Picture', '../assets/images/Patients/pat5.png', 2);
 
 
 
