@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <?php
+// Start the session
 session_start();
+
+// If the user is without session, send them to login page
+if (!isset($_SESSION['pid'])) {
+  header("Location: ../index.php");
+  exit();
+}
+
+// Set session expiration time to one week (in seconds)
+$session_timeout = 7 * 24 * 60 * 60; // 7 days * 24 hours * 60 minutes * 60 seconds
+
+// Check if the session is new or has expired
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {
+    // If session is expired, destroy the session and redirect to login page
+    session_unset();     // Unset all session variables
+    session_destroy();   // Destroy the session
+    header("Location: login.php"); // Redirect to login page
+    exit(); // Stop further execution
+}
+
+// Update last activity time
+$_SESSION['last_activity'] = time();
+
+
 include("newfunc.php");
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
@@ -12,6 +36,7 @@ $gender = $_SESSION['gender'];
 $lname = $_SESSION['lname'];
 $contact = $_SESSION['contact'];
 
+// When the patient clicks create a new entry button
 if (isset($_POST['app-submit'])) {
   $pid = $_SESSION['pid'];
   $username = $_SESSION['username'];
@@ -21,22 +46,26 @@ if (isset($_POST['app-submit'])) {
   $gender = $_SESSION['gender'];
   $contact = $_SESSION['contact'];
   $doctor = $_POST['doctor'];
-  $email = $_SESSION['email'];
-  # $fees=$_POST['fees'];
   $docFees = $_POST['docFees'];
-
   $appdate = $_POST['appdate'];
   $apptime = $_POST['apptime'];
 
-
-  $query = mysqli_query($con, "insert into appointmenttb(pid,fname,lname,gender,email,contact,doctor,docFees,appdate,apptime,userStatus,doctorStatus) values($pid,'$fname','$lname','$gender','$email','$contact','$doctor','$docFees','$appdate','$apptime','1','1')");
-
-  if ($query) {
-    echo "<script>alert('Your appointment successfully booked');window.location.href='admin-panel.php';</script>";
+  // Check if there is already an appointment on the selected date for the current user
+  $check_query = mysqli_query($con, "SELECT * FROM appointmenttb WHERE pid = $pid AND appdate = '$appdate'");
+  if (mysqli_num_rows($check_query) > 0) {
+    // Appointment already exists for the selected date
+    echo "<script>alert('You already have an appointment on $appdate. Please select a different date.');window.location.href='admin-panel.php';</script>";
   } else {
-    echo "<script>alert('Unable to process your request. Please try again!');window.location.href='admin-panel.php';</script>";
+    // No appointment exists for the selected date, proceed to insert the new appointment
+    $query = mysqli_query($con, "INSERT INTO appointmenttb(pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus) VALUES ($pid, '$fname', '$lname', '$gender', '$email', '$contact', '$doctor', '$docFees', '$appdate', '$apptime', '1', '1')");
+    if ($query) {
+      echo "<script>alert('Your appointment successfully booked');window.location.href='admin-panel.php';</script>";
+    } else {
+      echo "<script>alert('Unable to process your request. Please try again!');window.location.href='admin-panel.php';</script>";
+    }
   }
 }
+
 
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set userStatus='0' where ID = '" . $_GET['ID'] . "'");
@@ -377,8 +406,8 @@ if (isset($_POST['upload'])) {
                         </select>
                       </div><br /><br />
 
-                     <!-- Script to update Consultancy fees according to doctor selected -->
-                     <script>
+                      <!-- Script to update Consultancy fees according to doctor selected -->
+                      <script>
                         document.getElementById('doctor').onchange = function updateFees(e) {
                           var selectedOption = document.querySelector(`option[value="${this.value}"]`);
                           var selection = selectedOption.getAttribute('data-value');
