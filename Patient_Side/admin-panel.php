@@ -432,7 +432,7 @@ if (isset($_POST['upload'])) {
                       </div><br><br>
 
                       <div class="col-md-4">
-                        <input type="submit" name="app-submit" value="Create new entry" class="btn btn-primary" id="inputbtn">
+                        <input type="submit" name="app-submit" value="Create new entry" class="btn btn-info" id="inputbtn">
                       </div>
                       <div class="col-md-8"></div>
                     </div>

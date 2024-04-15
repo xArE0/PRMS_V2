@@ -7,8 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
     $query_appointments = "SELECT appointmenttb.ID, appointmenttb.appdate, appointmenttb.apptime, appointmenttb.doctor, appointmenttb.docFees, record.*, image.picture
     FROM appointmenttb
     LEFT JOIN record ON appointmenttb.ID = record.ID
-    LEFT JOIN image ON appointmenttb.ID = image.ID
-    WHERE appointmenttb.pid = $patientID";
+    LEFT JOIN image ON appointmenttb.ID = image.ID 
+    WHERE appointmenttb.pid = $patientID ORDER BY appdate DESC";
 
     $result_appointments = mysqli_query($con, $query_appointments);
 

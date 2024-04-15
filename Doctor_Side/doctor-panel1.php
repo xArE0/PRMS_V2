@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <?php
 include('../func1.php');
+
+// If the user is without session, send them to login page
+if (!isset($_SESSION['docid'])) {
+  header("Location: ../index.php");
+  exit();
+}
+
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 $doctor = $_SESSION['docid'];
 $docname = $_SESSION['dname'];
+
+// Set session expiration time to one week (in seconds)
+$session_timeout = 7 * 24 * 60 * 60; // 7 days * 24 hours * 60 minutes * 60 seconds
+
+// Check if the session is new or has expired
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $session_timeout)) {
+  // If session is expired, destroy the session and redirect to login page
+  session_unset();     // Unset all session variables
+  session_destroy();   // Destroy the session
+  header("Location: login.php"); // Redirect to login page
+  exit(); // Stop further execution
+}
+
+// Update last activity time
+$_SESSION['last_activity'] = time();
+
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set doctorStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
-    echo "<script>alert('Your appointment successfully cancelled');window.location.href = 'doctor-panel1.php';</script>";
+    echo "<script>alert('Appointment Completed');window.location.href = 'doctor-panel1.php';</script>";
   }
 }
 ?>
@@ -311,7 +334,7 @@ if (isset($_POST['upload'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
                 $dname = $_SESSION['dname'];
-                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname' AND approve_status=1 AND userStatus=1 AND doctorStatus=1";
+                $query = "select pid,ID,fname,lname,gender,email,contact,appdate,apptime,userStatus,doctorStatus from appointmenttb where doctor='$dname' AND approve_status=1 AND userStatus=1 AND doctorStatus=1 ORDER BY appdate DESC";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -343,8 +366,8 @@ if (isset($_POST['upload'])) {
                         ?></td>
                     <td>
                       <?php if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1)) { ?>
-                        <a href="doctor-panel1.php?ID=<?php echo $row['ID']; ?>&cancel=update" onClick="return confirm('Are you sure you want to cancel this appointment ?')" title="Cancel Appointment" tooltip-placement="top" tooltip="Remove">
-                          <button class="btn btn-danger">Cancel</button>
+                        <a href="doctor-panel1.php?ID=<?php echo $row['ID']; ?>&cancel=update" onClick="return confirm('Are you sure you want to complete ?')" title="Complete Appointment" tooltip-placement="top" tooltip="Remove">
+                          <button class="btn btn-success">Complete</button>
                         </a>
                       <?php } else {
                         echo "Cancelled";
@@ -375,7 +398,7 @@ if (isset($_POST['upload'])) {
               </thead>
               <tbody>
                 <?php
-                $query = "SELECT * FROM prestb WHERE doctor = '$docname'";
+                $query = "SELECT * FROM prestb WHERE doctor = '$docname' ORDER BY appdate DESC";
                 $result = mysqli_query($con, $query);
 
                 if ($result) {
