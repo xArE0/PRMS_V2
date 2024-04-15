@@ -32,16 +32,16 @@ if (isset($_POST['app-submit'])) {
   $query = mysqli_query($con, "insert into appointmenttb(pid,fname,lname,gender,email,contact,doctor,docFees,appdate,apptime,userStatus,doctorStatus) values($pid,'$fname','$lname','$gender','$email','$contact','$doctor','$docFees','$appdate','$apptime','1','1')");
 
   if ($query) {
-    echo "<script>alert('Your appointment successfully booked');</script>";
+    echo "<script>alert('Your appointment successfully booked');window.location.href='admin-panel.php';</script>";
   } else {
-    echo "<script>alert('Unable to process your request. Please try again!');</script>";
+    echo "<script>alert('Unable to process your request. Please try again!');window.location.href='admin-panel.php';</script>";
   }
 }
 
 if (isset($_GET['cancel'])) {
   $query = mysqli_query($con, "update appointmenttb set userStatus='0' where ID = '" . $_GET['ID'] . "'");
   if ($query) {
-    echo "<script>alert('Your appointment successfully cancelled');</script>";
+    echo "<script>alert('Your appointment successfully cancelled');window.location.href='admin-panel.php';</script>";
   }
 }
 
@@ -96,8 +96,6 @@ if (isset($_POST['upload'])) {
   }
 }
 ?>
-
-
 
 <html lang="en">
 <title>Patient-Dashboard</title>
@@ -379,12 +377,15 @@ if (isset($_POST['upload'])) {
                         </select>
                       </div><br /><br />
 
-                      <script>
+                     <!-- Script to update Consultancy fees according to doctor selected -->
+                     <script>
                         document.getElementById('doctor').onchange = function updateFees(e) {
-                          var selection = document.querySelector(`[value=${this.value}]`).getAttribute('data-value');
+                          var selectedOption = document.querySelector(`option[value="${this.value}"]`);
+                          var selection = selectedOption.getAttribute('data-value');
                           document.getElementById('docFees').value = selection;
                         };
                       </script>
+
                       <div class="col-md-4"><label for="consultancyfees">
                           Consultancy Fees
                         </label></div>
@@ -394,7 +395,7 @@ if (isset($_POST['upload'])) {
                       </div><br><br>
 
                       <div class="col-md-4"><label>Date</label></div>
-                      <div class="col-md-8"><input type="date" class="form-control datepicker" name="appdate"></div><br><br>
+                      <div class="col-md-8"><input type="date" class="form-control datepicker" name="appdate" min="<?php echo date('Y-m-d'); ?>" required></div><br><br>
 
                       <div class="col-md-4"><label>Time</label></div>
                       <div class="col-md-8">
@@ -412,12 +413,13 @@ if (isset($_POST['upload'])) {
             </div><br>
           </div>
 
+
+          <!-- Appointment History Section of the sidebar -->
           <div class="tab-pane fade" id="app-hist" role="tabpanel" aria-labelledby="list-pat-list">
 
-            <table class="table table-hover">
+            <table class="table table">
               <thead>
                 <tr>
-
                   <th scope="col">Doctor Name</th>
                   <th scope="col">Consultancy Fees</th>
                   <th scope="col">Appointment Date</th>
@@ -432,7 +434,7 @@ if (isset($_POST['upload'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
 
-                $query = "select ID,doctor,docFees,appdate,apptime,userStatus,doctorStatus from appointmenttb where fname ='$fname' and lname='$lname'";
+                $query = "select ID,doctor,docFees,appdate,apptime,userStatus,doctorStatus from appointmenttb where fname ='$fname' and lname='$lname' ORDER BY appdate DESC";
                 $result = mysqli_query($con, $query);
                 while ($row = mysqli_fetch_array($result)) {
                 ?>
@@ -451,7 +453,7 @@ if (isset($_POST['upload'])) {
                       }
 
                       if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0)) {
-                        echo "Cancelled by Doctor";
+                        echo "Inactive/Completed";
                       }
                       ?></td>
                     <td>
@@ -471,8 +473,9 @@ if (isset($_POST['upload'])) {
             <br>
           </div>
 
+          <!-- Prescriptions Section of the sidebar -->
           <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
-            <table class="table table-hover">
+            <table class="table table">
               <thead>
                 <tr>
                   <th scope="col">Doctor Name</th>
@@ -482,7 +485,7 @@ if (isset($_POST['upload'])) {
                   <th scope="col">Diseases</th>
                   <th scope="col">Allergies</th>
                   <th scope="col">Prescriptions</th>
-                  <th scope="col">Bill Payment</th>
+                  <!-- <th scope="col">Bill Payment</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -491,7 +494,7 @@ if (isset($_POST['upload'])) {
                 $con = mysqli_connect("localhost", "root", "", "prms_db");
                 global $con;
 
-                $query = "select doctor,ID,appdate,apptime,disease,allergy,prescription from prestb where pid='$pid';";
+                $query = "select doctor,ID,appdate,apptime,disease,allergy,prescription from prestb where pid='$pid' ORDER BY appdate DESC;";
 
                 $result = mysqli_query($con, $query);
                 if (!$result) {
@@ -509,13 +512,13 @@ if (isset($_POST['upload'])) {
                     <td><?php echo $row['disease']; ?></td>
                     <td><?php echo $row['allergy']; ?></td>
                     <td><?php echo $row['prescription']; ?></td>
-                    <td>
+                    <!-- <td>
                       <form method="get">
                         <a href="admin-panel.php?ID=<?php echo $row['ID'] ?>">
                           <input type="hidden" name="ID" value="<?php echo $row['ID'] ?>" />
                           <input type="submit" onclick="alert('Bill Paid Successfully');" name="generate_bill" class="btn btn-success" value="Pay Bill" />
                         </a>
-                    </td>
+                    </td> -->
                     </form>
                   </tr>
                 <?php }

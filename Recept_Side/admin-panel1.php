@@ -951,7 +951,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                         <label>Date</label>
                       </div>
                       <div class="col-md-8">
-                        <input type="date" class="form-control datepicker" name="appdate" id="appdate" required>
+                        <input type="date" class="form-control datepicker" name="appdate" id="appdate" min="<?php echo date('Y-m-d'); ?>" required>
                       </div><br><br>
                       <div class="col-md-4">
                         <label>Time</label>

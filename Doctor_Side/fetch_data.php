@@ -1,4 +1,3 @@
-<!-- This is for fetching the data for Regular Health Checkups section of the sidebar-->
 <?php
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
@@ -17,13 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
         $appointment_list = '<div class="col-md-12"><h3>Appointments</h3><table class="table"><thead><tr><th>Appointment Date</th><th>Appointment Time</th><th>Doctor</th><th>Blood Type</th><th>Blood Pressure</th><th>Weight</th></tr></thead><tbody>';
 
         while ($row_appointment = mysqli_fetch_assoc($result_appointments)) {
-            // Add each appointment to the table with appointment ID
-            $appointment_list .= '<tr class="open-modal" data-appointmentid="' . $row_appointment['ID'] . '"><td>' . $row_appointment['appdate'] . '</td><td>' . $row_appointment['apptime'] . '</td><td>' . $row_appointment['doctor'] . '</td><td>' . $row_appointment['blood_type'] . '</td><td>' . $row_appointment['blood_pressure'] . '</td><td>' . $row_appointment['weight'] . '</td></tr>';
+            $appointment_list .= '<tr class="open-modal appointment-row" data-appointmentid="' . $row_appointment['ID'] . '"><td>' . $row_appointment['appdate'] . '</td><td>' . $row_appointment['apptime'] . '</td><td>' . $row_appointment['doctor'] . '</td><td>' . $row_appointment['blood_type'] . '</td><td>' . $row_appointment['blood_pressure'] . '</td><td>' . $row_appointment['weight'] . '</td></tr>';
         }
-
         $appointment_list .= '</tbody></table></div>';
-
-        // Return the HTML content of the appointment list
         echo $appointment_list;
     } else {
         echo "Error retrieving appointments: " . mysqli_error($con);

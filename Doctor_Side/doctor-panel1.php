@@ -191,6 +191,11 @@ if (isset($_POST['upload'])) {
   .navbar-dark .navbar-brand {
     font-size: 24px;
   }
+
+  .appointment-row:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
 </style>
 
 <body style="padding-top:50px;">

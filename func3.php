@@ -6,7 +6,7 @@ if(isset($_POST['adsub'])){
 	$password=$_POST['password2'];
 	$query="select * from admintb where username='$username' and password='$password';";
 	$result=mysqli_query($con,$query);
-	if(mysqli_num_rows($result)==1)
+	if(mysqli_num_rows($result)>0)
 	{
 		$_SESSION['username']=$username;
 		header("Location:Recept_side/admin-panel1.php");
@@ -25,9 +25,6 @@ if(isset($_POST['update_data']))
 	if($result)
 		header("Location:updated.php");
 }
-
-
-
 
 function display_docs()
 {
