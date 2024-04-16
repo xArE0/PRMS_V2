@@ -2,13 +2,14 @@
 session_start();
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 if (isset($_POST['patsub1'])) {
-  $fname = $_POST['fname'];
-  $lname = $_POST['lname'];
-  $gender = $_POST['gender'];
-  $email = $_POST['email'];
-  $contact = $_POST['contact'];
-  $password = $_POST['password'];
-  $cpassword = $_POST['cpassword'];
+  $fname = mysqli_real_escape_string($con, $_POST['fname']);
+  $lname = mysqli_real_escape_string($con, $_POST['lname']);
+  $dob = mysqli_real_escape_string($con, $_POST['dob']);
+  $gender = mysqli_real_escape_string($con, $_POST['gender']);
+  $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+  $contact = filter_var($_POST['contact'], FILTER_SANITIZE_NUMBER_INT);
+  $password = mysqli_real_escape_string($con, $_POST['password']);
+  $cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
 
   $check_query = "SELECT * FROM patreg WHERE email='$email'";
   $check_result = mysqli_query($con, $check_query);
@@ -18,7 +19,7 @@ if (isset($_POST['patsub1'])) {
   }
 
   if ($password == $cpassword) {
-    $query = "INSERT INTO patreg(fname,lname,gender,email,contact,password,cpassword) VALUES ('$fname','$lname','$gender','$email','$contact','$password','$cpassword')";
+    $query = "INSERT INTO patreg(fname,lname,gender,dob,email,contact,password,cpassword) VALUES ('$fname','$lname','$gender','$dob','$email','$contact','$password','$cpassword')";
     $result = mysqli_query($con, $query);
     if ($result) {
       echo "<script> alert('Registration Successful');window.location.href = 'index.php';</script>";

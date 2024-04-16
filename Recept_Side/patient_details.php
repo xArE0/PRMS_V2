@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patientID'])) {
                 </div>
             ';
             // Query to fetch prescriptions for the patient
-            $query_prescriptions = "SELECT * FROM prestb WHERE pid = $patientID";
+            $query_prescriptions = "SELECT * FROM prestb WHERE pid = $patientID ORDER BY appdate DESC";
             $result_prescriptions = mysqli_query($con, $query_prescriptions);
 
             if ($result_prescriptions) {

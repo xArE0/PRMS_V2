@@ -101,7 +101,7 @@ include("header.php");
                     <label>Password: </label>
                   </div>
                   <div class="col-md-8" style="margin-top: 8%">
-                    <input type="password" class="form-control" name="password2" placeholder="enter password" required>
+                    <input type="password" class="form-control" name="password2" placeholder="enter password" onkeydown="return alphanumericOnly(event);" required>
                   </div><br><br><br>
                 </div>
                 <div class="row">
@@ -116,6 +116,17 @@ include("header.php");
       </div>
     </div>
   </div>
+
+  <script>
+    function alphanumericOnly(event) {
+      var key = event.keyCode;
+      return ((key >= 48 && key <= 57) || // Numbers
+        (key >= 65 && key <= 90) || // Uppercase letters
+        (key >= 97 && key <= 122) || // Lowercase letters
+        key == 8 || // Backspace
+        key == 32); // Space
+    };
+  </script>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

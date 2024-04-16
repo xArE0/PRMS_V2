@@ -37,6 +37,15 @@
             return ((key >= 48 && key <= 57) || key == 8 || key == 32);
         };
 
+        function alphanumericOnly(event) {
+            var key = event.keyCode;
+            return ((key >= 48 && key <= 57) || // Numbers
+                (key >= 65 && key <= 90) || // Uppercase letters
+                (key >= 97 && key <= 122) || // Lowercase letters
+                key == 8 || // Backspace
+                key == 32); // Space
+        };
+
         function checklen() {
             var pass1 = document.getElementById("password");
             if (pass1.value.length < 6) {
@@ -119,10 +128,11 @@
                                         <input type="email" class="form-control" placeholder="Your Email *" name="email" />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" placeholder="Password *" id="password" name="password" onkeyup='check();' required />
+                                        <input type="password" class="form-control" placeholder="Password *" id="password" name="password" onkeydown="return alphanumericOnly(event);" onkeyup='check();' required />
                                     </div>
+
                                     <div class="form-group">
-                                        <input type="file" name="fileToUpload" id="fileToUpload">
+                                        <input type="date" class="form-control" id="dob" name="dob" required />
                                     </div>
 
                                     <div class="form-group">
@@ -149,7 +159,7 @@
                                         <input type="tel" minlength="10" maxlength="10" name="contact" class="form-control" onkeydown="return numOnly(event);" placeholder="Your Phone *">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password *" name="cpassword" onkeyup='check();' required /><span id='message'></span>
+                                        <input type="password" class="form-control" id="cpassword" placeholder="Confirm Password *" name="cpassword" onkeydown="return alphanumericOnly(event);" onkeyup='check();' required /><span id='message'></span>
                                     </div>
                                     <input type="submit" class="btnRegister" name="patsub1" onclick="return checklen();" value="Register">
                                 </div>
@@ -164,12 +174,12 @@
                             <div class="row register-form">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="User Name *" name="username3" onkeydown="return alphaOnly(event);" required />
+                                        <input type="text" class="form-control" placeholder="User Name *" name="username3" onkeydown="return alphaOnly(event);" required/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="password" class="form-control" placeholder="Password *" name="password3" required />
+                                        <input type="password" class="form-control" placeholder="Password *" name="password3" onkeydown="return alphanumericOnly(event);" required />
                                     </div>
 
                                     <input type="submit" class="btnRegister" name="docsub1" value="Login" />
@@ -190,7 +200,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="password" class="form-control" placeholder="Password *" name="password2" required />
+                                        <input type="password" class="form-control" placeholder="Password *" name="password2" onkeydown="return alphanumericOnly(event);" required />
                                     </div>
 
                                     <input type="submit" class="btnRegister" name="adsub" value="Login" />

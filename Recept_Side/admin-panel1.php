@@ -73,9 +73,6 @@ session_start();
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
-  // Get current date and time
-  $currentDateTime = date("Y-m-d H:i:s");
-
   // Get form data
   $appointmentID = $_POST["appointmentID"];
   $patientID = $_POST["patientID"];
@@ -85,144 +82,144 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["app-submit"])) {
   $appdate = $_POST["appdate"];
   $apptime = $_POST["apptime"];
 
-  // Combine date and time
-  $combinedDateTime = $appdate . ' ' . $apptime;
-
-  // Check if appointment date and time are not in the past
-  if ($combinedDateTime > $currentDateTime) {
-    // Fetch patient data based on patientID
-    $patient_query = mysqli_query($con, "SELECT * FROM patreg WHERE pid = '$patientID'");
-    $patient_data = mysqli_fetch_assoc($patient_query);
-
-    // Checking if patient data is found
-    if ($patient_data) {
-      $_SESSION['pid'] = $patient_data['pid'];
-      $_SESSION['email'] = $patient_data['email'];
-      $_SESSION['fname'] = $patient_data['fname'];
-      $_SESSION['lname'] = $patient_data['lname'];
-      $_SESSION['gender'] = $patient_data['gender'];
-      $_SESSION['contact'] = $patient_data['contact'];
-
-      // Insert appointment data into the database
-      $sqlcmd = "INSERT INTO appointmenttb(pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus) 
-                     VALUES ('{$_SESSION['pid']}', '{$_SESSION['fname']}', '{$_SESSION['lname']}', '{$_SESSION['gender']}', '{$_SESSION['email']}', '{$_SESSION['contact']}', '$doctor', '$docFees', '$appdate', '$apptime', '1', '1')";
-
-      $query = mysqli_query($con, $sqlcmd);
-
-      if ($query) {
-        // Redirect to a different page to prevent form resubmission
-        header("Location: admin-panel1.php");
-        exit(); // Stop further execution
-      } else {
-        echo "<script>alert('Unable to process your request. Please try again!');window.location.href = 'admin-panel1.php';</script>";
-      }
-    } else {
-      echo "<script>alert('Patient data not found. Please check the patient ID!');window.location.href = 'admin-panel1.php';</script>";
-    }
-  } else {
-    echo "<script>alert('Appointment date and time cannot be in the past!');window.location.href = 'admin-panel1.php';</script>";
+  // Check if there's already an appointment on the selected date
+  $existing_appointment_query = mysqli_query($con, "SELECT * FROM appointmenttb WHERE appdate = '$appdate'");
+  if (mysqli_num_rows($existing_appointment_query) > 0) {
+    echo "<script>alert('There is already an appointment scheduled on the selected date!');window.location.href = 'admin-panel1.php';</script>";
+    exit();
   }
-} elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_entry"])) {
-  // Get current date and time
-  $currentDateTime = date("Y-m-d H:i:s");
 
-  // Get form data
-  $appointmentID = $_POST["appointmentID"];
-  $patientID = $_POST["patientID"];
-  $spec = $_POST["spec"];
-  $doctor = $_POST["doctor"];
-  $docFees = $_POST["docFees"];
-  $appdate = $_POST["appdate"];
-  $apptime = $_POST["apptime"];
+  // Fetch patient data based on patientID
+  $patient_query = mysqli_query($con, "SELECT * FROM patreg WHERE pid = '$patientID'");
+  $patient_data = mysqli_fetch_assoc($patient_query);
 
-  // Combine date and time
-  $combinedDateTime = $appdate . ' ' . $apptime;
+  // Checking if patient data is found
+  if ($patient_data) {
+    $_SESSION['pid'] = $patient_data['pid'];
+    $_SESSION['email'] = $patient_data['email'];
+    $_SESSION['fname'] = $patient_data['fname'];
+    $_SESSION['lname'] = $patient_data['lname'];
+    $_SESSION['gender'] = $patient_data['gender'];
+    $_SESSION['contact'] = $patient_data['contact'];
 
-  // Check if appointment date and time are not in the past
-  if ($combinedDateTime > $currentDateTime) {
-    // Update appointment data in the database
-    $sqlcmd = "UPDATE appointmenttb 
-                   SET doctor = '$doctor', docFees = '$docFees', appdate = '$appdate', apptime = '$apptime' 
-                   WHERE ID = '$appointmentID' AND pid = '$patientID'";
+    // Insert appointment data into the database
+    $sqlcmd = "INSERT INTO appointmenttb(pid, fname, lname, gender, email, contact, doctor, docFees, appdate, apptime, userStatus, doctorStatus) 
+               VALUES ('{$_SESSION['pid']}', '{$_SESSION['fname']}', '{$_SESSION['lname']}', '{$_SESSION['gender']}', '{$_SESSION['email']}', '{$_SESSION['contact']}', '$doctor', '$docFees', '$appdate', '$apptime', '1', '1')";
 
     $query = mysqli_query($con, $sqlcmd);
 
     if ($query) {
-      echo "<script>alert('Appointment details successfully updated');window.location.href = 'admin-panel1.php';</script>";
-      exit();
+      echo "<script>alert('Appointment Created Successfully! '); window.location.href = 'admin-panel1.php';</script>";
+      exit(); // Stop further execution
     } else {
-      echo "<script>alert('Failed to update appointment details. Please try again!');window.location.href = 'admin-panel1.php';</script>";
+      echo "<script>alert('Unable to process your request. Please try again!');window.location.href = 'admin-panel1.php';</script>";
     }
   } else {
-    echo "<script>alert('Appointment date and time cannot be in the past!');</script>";
+    echo "<script>alert('Patient data not found. Please check the patient ID!');window.location.href = 'admin-panel1.php';</script>";
+  }
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_entry"])) {
+  // Get form data
+  $appointmentID = $_POST["appointmentID"];
+  $patientID = $_POST["patientID"];
+  $spec = $_POST["spec"];
+  $doctor = $_POST["doctor"];
+  $docFees = $_POST["docFees"];
+  $appdate = $_POST["appdate"];
+  $apptime = $_POST["apptime"];
+
+  // Check if there's already an appointment on the selected date
+  $existing_appointment_query = mysqli_query($con, "SELECT * FROM appointmenttb WHERE appdate = '$appdate' AND ID != '$appointmentID'");
+  if (mysqli_num_rows($existing_appointment_query) > 0) {
+    echo "<script>alert('There is already an appointment scheduled on the selected date!');window.location.href = 'admin-panel1.php';</script>";
+    exit();
+  }
+
+  // Update appointment data in the database
+  $sqlcmd = "UPDATE appointmenttb 
+             SET doctor = '$doctor', docFees = '$docFees', appdate = '$appdate', apptime = '$apptime' 
+             WHERE ID = '$appointmentID' AND pid = '$patientID'";
+
+  $query = mysqli_query($con, $sqlcmd);
+
+  if ($query) {
+    echo "<script>alert('Appointment details successfully updated');window.location.href = 'admin-panel1.php';</script>";
+    exit();
+  } else {
+    echo "<script>alert('Failed to update appointment details. Please try again!');window.location.href = 'admin-panel1.php';</script>";
   }
 }
 ?>
 
-
+<!-- Code for Approve Meachanism of the Appointment Details section of the sidebar -->
 <?php
 // Establish database connection
 $con = mysqli_connect("localhost", "root", "", "prms_db");
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointmentID'])) {
   // Sanitize the input to prevent SQL injection
   $appointmentID = mysqli_real_escape_string($con, $_POST['appointmentID']);
 
-  // Fetch appointment details from the database
-  $query = "SELECT * FROM appointmenttb WHERE ID = '$appointmentID'";
-  $result = mysqli_query($con, $query);
+  // Update appointment status
+  $update_query = "UPDATE appointmenttb SET approve_status = 1 WHERE ID = '$appointmentID'";
+  if (mysqli_query($con, $update_query)) {
+    // Fetch appointment details from the database
+    $query = "SELECT * FROM appointmenttb WHERE ID = '$appointmentID'";
+    $result = mysqli_query($con, $query);
 
-  if (mysqli_num_rows($result) > 0) {
-    $row = mysqli_fetch_assoc($result);
+    if (mysqli_num_rows($result) > 0) {
+      $row = mysqli_fetch_assoc($result);
 
-    // Extract appointment details
-    $pid = $row['pid'];
-    $fname = $row['fname'];
-    $lname = $row['lname'];
-    $gender = $row['gender'];
-    $contact = $row['contact'];
-    $appdate = $row['appdate'];
-    $apptime = $row['apptime'];
+      // Extract appointment details
+      $pid = $row['pid'];
+      $fname = $row['fname'];
+      $lname = $row['lname'];
+      $gender = $row['gender'];
+      $contact = $row['contact'];
+      $appdate = $row['appdate'];
+      $apptime = $row['apptime'];
 
-    // Prepare email body with appointment details
-    $emailBody = "Your Appointment Has Been Approved!<br><br>";
-    $emailBody .= "<strong>Details:</strong><br>";
-    $emailBody .= "<strong>Name:</strong> $fname $lname<br>";
-    $emailBody .= "<strong>Appointment Date:</strong> $appdate<br>";
-    $emailBody .= "<strong>Appointment Time:</strong> $apptime<br>";
+      // Prepare email body with appointment details
+      $emailBody = "Your Appointment Has Been Approved!<br><br>";
+      $emailBody .= "<strong>Details:</strong><br>";
+      $emailBody .= "<strong>Name:</strong> $fname $lname<br>";
+      $emailBody .= "<strong>Appointment Date:</strong> $appdate<br>";
+      $emailBody .= "<strong>Appointment Time:</strong> $apptime<br>";
 
-    // Send email using PHPMailer
-    $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->SMTPAuth = true;
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port = 465;
-    $mail->Username = 'prmsofficialgg@gmail.com';
-    $mail->Password = 'muxhlnzfrmmjerky';
-    $mail->setFrom('prmsofficialgg@gmail.com');
-    $mail->addAddress($_SESSION["email"]);
-    $mail->isHTML(true);
-    $mail->Subject = "Appointment Status";
-    $mail->Body = $emailBody;
+      // Send email using PHPMailer
+      $mail = new PHPMailer(true);
+      $mail->isSMTP();
+      $mail->SMTPAuth = true;
+      $mail->Host = 'smtp.gmail.com';
+      $mail->SMTPSecure = 'ssl';
+      $mail->Port = 465;
+      $mail->Username = 'prmsofficialgg@gmail.com';
+      $mail->Password = 'muxhlnzfrmmjerky';
+      $mail->setFrom('prmsofficialgg@gmail.com');
+      $mail->addAddress($_SESSION["email"]);
+      $mail->isHTML(true);
+      $mail->Subject = "Appointment Status";
+      $mail->Body = $emailBody;
 
-    // Send email and update appointment status
-    if ($mail->send()) {
-      $update_query = "UPDATE appointmenttb SET approve_status = 1 WHERE ID = '$appointmentID'";
-      mysqli_query($con, $update_query);
-      echo "Email sent and appointment status updated successfully.";
+      // Send email
+      if ($mail->send()) {
+        echo "Email sent and appointment status updated successfully.";
+      } else {
+        echo "Error sending email: " . $mail->ErrorInfo;
+      }
     } else {
-      echo "Error sending email: " . $mail->ErrorInfo;
+      echo "No appointment found with ID: $appointmentID";
     }
   } else {
-    echo "No appointment found with ID: $appointmentID";
+    echo "Error updating appointment status: " . mysqli_error($con);
   }
 
   mysqli_close($con);
 }
 ?>
+
 
 
 
@@ -528,12 +525,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
             <div class="col-md-8">
               <form class="form-group" action="doctorsearch.php" method="post">
                 <div class="row">
-                  <div class="col-md-10"><input type="text" name="doctor_contact" placeholder="Enter Email ID" class="form-control"></div>
+                  <div class="col-md-10"><input type="text" name="doctor_contact" placeholder="Enter Email ID" class="form-control" required></div>
                   <div class="col-md-2"><input type="submit" name="doctor_search_submit" class="btn btn-info" value="Search"></div>
                 </div>
               </form>
             </div>
-            <table class="table table-hover">
+            <table class="table table">
               <thead>
                 <tr>
                   <th scope="col">Doctor ID</th>
@@ -630,7 +627,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
           <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
             <div class="col-md-8">
               <div class="row">
-                <table class="table table-hover">
+                <table class="table table">
                   <thead>
                     <tr>
                       <th scope="col">Doctor</th>
@@ -696,7 +693,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
               </form>
             </div>
 
-            <table class="table table-hover">
+            <table class="table table">
               <thead>
                 <tr>
                   <th scope="col">Appointment ID</th>
@@ -1012,7 +1009,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cancelAppointmentID'])
                 </div>
               </form>
             </div>
-            <table class="table table-hover">
+            <table class="table table">
               <thead>
                 <tr>
                   <th scope="col">User Name</th>
