@@ -4,7 +4,7 @@ $con = mysqli_connect("localhost", "root", "", "prms_db");
 if (isset($_POST['patsub'])) {
   $email = $_POST['email'];
   $password = $_POST['password2'];
-  $query = "select * from prms_db.patreg where email='$email' and cpassword='$password' WHERE active_status=1;";
+  $query = "select * from prms_db.patreg where email='$email' and cpassword='$password' AND active_status=1;";
   $result = mysqli_query($con, $query);
   if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
